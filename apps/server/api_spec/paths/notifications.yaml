@@ -1,0 +1,222 @@
+notifications:
+    get:
+        tags: [Notifications]
+        summary: Get all notifications
+        parameters:
+            - name: category
+              in: query
+              schema:
+                  type: string
+              description: Filter by category
+            - name: unread
+              in: query
+              schema:
+                  type: boolean
+              description: Filter unread notifications
+        responses:
+            "200":
+                description: List of notifications
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/Notification"
+    post:
+        tags: [Notifications]
+        summary: Create a new notification
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            content:
+                                type: string
+                            priority:
+                                type: string
+                                format: uuid
+                            cooldown:
+                                type: integer
+                            category:
+                                type: string
+                            sender:
+                                type: string
+                            scheduled_at:
+                                type: string
+                                format: date-time
+                        required: [content, priority, category, sender]
+        responses:
+            "201":
+                description: Notification created successfully
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Notification"
+
+mark_read:
+    post:
+        tags: [Notifications]
+        summary: Mark notification as read
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "201":
+                description: Notification marked as read
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/NotificationReadReceipt"
+
+visibility_users:
+    get:
+        tags: [Notifications]
+        summary: Get users with notification visibility
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: List of users with notification visibility
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/User"
+    post:
+        tags: [Notifications]
+        summary: Grant notification visibility to user
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            user_id:
+                                type: string
+                                format: uuid
+                        required: [user_id]
+        responses:
+            "201":
+                description: Notification visibility granted to user
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/NotificationVisibilityUser"
+
+visibility_roles:
+    get:
+        tags: [Notifications]
+        summary: Get roles with notification visibility
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: List of roles with notification visibility
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/Role"
+    post:
+        tags: [Notifications]
+        summary: Grant notification visibility to role
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            role_id:
+                                type: string
+                                format: uuid
+                        required: [role_id]
+        responses:
+            "201":
+                description: Notification visibility granted to role
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/NotificationVisibilityRole"
+
+attachments:
+    get:
+        tags: [Notifications]
+        summary: Get attachments for notification
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: List of attachments for the notification
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/Document"
+    post:
+        tags: [Notifications]
+        summary: Add attachment to notification
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            document_id:
+                                type: string
+                                format: uuid
+                        required: [document_id]
+        responses:
+            "201":
+                description: Attachment added to notification
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/NotificationAttachment"

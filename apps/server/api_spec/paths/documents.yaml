@@ -1,0 +1,277 @@
+documents:
+    get:
+        tags: [Documents]
+        summary: Get all documents
+        operationId: listDocuments
+        parameters:
+            - name: type
+              in: query
+              schema:
+                  type: string
+              description: Filter by document type
+        responses:
+            "200":
+                description: List of documents
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/Document"
+    post:
+        tags: [Documents]
+        summary: Create a new document
+        operationId: createDocument
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            type:
+                                type: string
+                            title:
+                                type: string
+                        required: [type, title]
+        responses:
+            "201":
+                description: Document created successfully
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Document"
+
+documents_by_id:
+    get:
+        tags: [Documents]
+        summary: Get document by ID
+        operationId: getDocumentById
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: Document found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Document"
+            "404":
+                description: Document not found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+    put:
+        tags: [Documents]
+        summary: Update document
+        operationId: updateDocument
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            type:
+                                type: string
+                            title:
+                                type: string
+        responses:
+            "200":
+                description: Document updated successfully
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Document"
+            "404":
+                description: Document not found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+    delete:
+        tags: [Documents]
+        summary: Delete document
+        operationId: deleteDocument
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "204":
+                description: Document deleted successfully
+            "404":
+                description: Document not found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+
+visibility_users:
+    get:
+        tags: [Documents]
+        summary: Get users with document visibility
+        operationId: getDocumentVisibilityUsers
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: List of users with document visibility
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/User"
+    post:
+        tags: [Documents]
+        summary: Grant document visibility to user
+        operationId: grantDocumentVisibilityToUser
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            user_id:
+                                type: string
+                                format: uuid
+                        required: [user_id]
+        responses:
+            "201":
+                description: Document visibility granted to user
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/DocumentVisibilityUser"
+
+visibility_roles:
+    get:
+        tags: [Documents]
+        summary: Get roles with document visibility
+        operationId: getDocumentVisibilityRoles
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: List of roles with document visibility
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/Role"
+    post:
+        tags: [Documents]
+        summary: Grant document visibility to role
+        operationId: grantDocumentVisibilityToRole
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            role_id:
+                                type: string
+                                format: uuid
+                        required: [role_id]
+        responses:
+            "201":
+                description: Document visibility granted to role
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/DocumentVisibilityRole"
+
+templates:
+    get:
+        tags: [Documents]
+        summary: Get templates for document
+        operationId: getDocumentTemplates
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: List of templates for the document
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/Document"
+    post:
+        tags: [Documents]
+        summary: Associate template with document
+        operationId: associateTemplateWithDocument
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            template_id:
+                                type: string
+                                format: uuid
+                        required: [template_id]
+        responses:
+            "201":
+                description: Template associated with document
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/DocumentTemplate"

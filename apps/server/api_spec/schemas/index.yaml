@@ -1,0 +1,310 @@
+Error:
+    type: object
+    properties:
+        error:
+            type: string
+            description: Error message
+        code:
+            type: string
+            description: Error code
+    required: [error]
+
+User:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        email:
+            type: string
+            format: email
+            description: Email address
+        password:
+            type: string
+            description: Password hash
+            writeOnly: true
+    required: [id, email]
+
+Session:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        user_id:
+            type: string
+            format: uuid
+            description: Foreign key to user
+        refresh_token:
+            type: string
+            description: JWT token (refresh token)
+        expires:
+            type: string
+            format: date-time
+            description: Expiration date
+    required: [id, user_id, refresh_token, expires]
+
+Permission:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        name:
+            type: string
+            description: Permission name
+    required: [id, name]
+
+Role:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        name:
+            type: string
+            description: Role name
+        priority:
+            type: integer
+            description: Priority of role
+    required: [id, name, priority]
+
+RolePermission:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        role_id:
+            type: string
+            format: uuid
+            description: Foreign key to role
+        permission_id:
+            type: string
+            format: uuid
+            description: Foreign key to permission
+    required: [id, role_id, permission_id]
+
+UserRole:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        user_id:
+            type: string
+            format: uuid
+            description: Foreign key to user
+        role_id:
+            type: string
+            format: uuid
+            description: Foreign key to role
+        priority:
+            type: integer
+            description: Priority of role
+    required: [id, user_id, role_id, priority]
+
+NotificationPriority:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        threshold:
+            type: string
+            description: Threshold of notification (ISO 8601 duration)
+    required: [id, threshold]
+
+Notification:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        content:
+            type: string
+            description: Notification content
+        priority:
+            type: string
+            format: uuid
+            description: Foreign key to priority
+        cooldown:
+            type: integer
+            description: Cooldown of notification
+        category:
+            type: string
+            description: Category of notification
+        sender:
+            type: string
+            description: Sender of notification
+        scheduled_at:
+            type: string
+            format: date-time
+            description: Scheduled date
+        created_at:
+            type: string
+            format: date-time
+            description: Creation date
+        updated_at:
+            type: string
+            format: date-time
+            description: Update date
+    required: [id, content, priority, category, sender, created_at, updated_at]
+
+NotificationAttachment:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        notification:
+            type: string
+            format: uuid
+            description: Foreign key to notification
+        attachment:
+            type: string
+            format: uuid
+            description: Foreign key to document
+    required: [id, notification, attachment]
+
+NotificationVisibilityUser:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        notification:
+            type: string
+            format: uuid
+            description: Foreign key to notification
+        user:
+            type: string
+            format: uuid
+            description: Foreign key to user
+    required: [id, notification, user]
+
+NotificationVisibilityRole:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        notification:
+            type: string
+            format: uuid
+            description: Foreign key to notification
+        role:
+            type: string
+            format: uuid
+            description: Foreign key to role
+    required: [id, notification, role]
+
+NotificationReadReceipt:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        notification:
+            type: string
+            format: uuid
+            description: Foreign key to notification
+        user:
+            type: string
+            format: uuid
+            description: Foreign key to user
+        read_at:
+            type: string
+            format: date-time
+            description: Read date
+    required: [id, notification, user, read_at]
+
+Document:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        type:
+            type: string
+            description: Document type
+        title:
+            type: string
+            description: Document title
+        created_by:
+            type: string
+            format: uuid
+            description: Foreign key to user
+        created_at:
+            type: string
+            format: date-time
+            description: Creation date
+        updated_at:
+            type: string
+            format: date-time
+            description: Update date
+    required: [id, type, title, created_by, created_at, updated_at]
+
+DocumentVisibilityUser:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        document:
+            type: string
+            format: uuid
+            description: Foreign key to document
+        user:
+            type: string
+            format: uuid
+            description: Foreign key to user
+    required: [id, document, user]
+
+DocumentVisibilityRole:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        document:
+            type: string
+            format: uuid
+            description: Foreign key to document
+        role:
+            type: string
+            format: uuid
+            description: Foreign key to role
+    required: [id, document, role]
+
+DocumentTemplate:
+    type: object
+    properties:
+        id:
+            type: string
+            format: uuid
+            description: Unique ID
+        document:
+            type: string
+            format: uuid
+            description: Foreign key to document
+        template:
+            type: string
+            format: uuid
+            description: Foreign key to document
+    required: [id, document, template]

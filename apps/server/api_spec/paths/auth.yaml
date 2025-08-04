@@ -1,0 +1,68 @@
+login:
+    post:
+        tags: [Authentication]
+        summary: User login
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            email:
+                                type: string
+                                format: email
+                            password:
+                                type: string
+                        required: [email, password]
+        responses:
+            "200":
+                description: Login successful
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                access_token:
+                                    type: string
+                                refresh_token:
+                                    type: string
+                                user:
+                                    $ref: "../schemas/index.yaml#/User"
+            "401":
+                description: Invalid credentials
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+
+refresh:
+    post:
+        tags: [Authentication]
+        summary: Refresh access token
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            refresh_token:
+                                type: string
+                        required: [refresh_token]
+        responses:
+            "200":
+                description: Token refreshed successfully
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                access_token:
+                                    type: string
+            "401":
+                description: Invalid refresh token
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
