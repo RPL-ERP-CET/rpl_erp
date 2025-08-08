@@ -1,10 +1,11 @@
-import { Button } from "@client-web/components/ui/button";
+import { Nav, Hero, Footer } from "@client-web/components/landing";
 
-export default function Home() {
+export default function Landing() {
     return (
-        <div>
-            <h1>Home</h1>
-            <Button>This is a button</Button>
-        </div>
+        <>
+            <Nav />
+            <Hero />
+            <Footer />
+        </>
     );
 }
