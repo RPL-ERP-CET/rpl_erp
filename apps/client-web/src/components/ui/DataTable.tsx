@@ -23,7 +23,6 @@ export function DataTable<TData, TValue>({
     data,
 }: DataTableProps<TData, TValue>) {
     const [searchValue, setSearchValue] = React.useState("");
-    // Changed from `"all" | string` to just `string` to fix the ESLint type error
     const [searchScope, setSearchScope] = React.useState<string>("all");
     const [dateFilter, setDateFilter] = React.useState<Date | undefined>();
 
@@ -45,7 +44,7 @@ export function DataTable<TData, TValue>({
                     col.id.toLowerCase(),
                 ),
             );
-    }, [columns, table]);
+    }, [table]);
 
     // Apply search filtering
     React.useEffect(() => {
