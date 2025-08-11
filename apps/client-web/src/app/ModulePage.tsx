@@ -30,6 +30,12 @@ export default function ModulePage() {
             >
                 Documents Module
             </Button>
+            <Button
+                onClick={() => router.push("/Demo")}
+                className="mt-40 w-[500px] items-center"
+            >
+                Demo
+            </Button>
         </div>
     );
 }
