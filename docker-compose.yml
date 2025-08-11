@@ -1,109 +1,109 @@
 services:
-  # development containers
-  dev-client-web:
-    profiles:
-      - dev
-    build:
-      context: .
-      dockerfile: ./apps/client-web/Dockerfile.dev
-    # image: rpl-erp-client-web:dev
-    env_file:
-      - ./apps/client-web/.env.dev
-    ports:
-      - "${DEV_CLIENT_WEB_PORT}:${DEV_CLIENT_WEB_PORT}"
-    restart: unless-stopped
-    volumes:
-      - ./:/app
-      - /app/node_modules
-      - /app/apps/client-web/node_modules
+    # development containers
+    dev-client-web:
+        profiles:
+            - dev
+        build:
+            context: .
+            dockerfile: ./apps/client-web/Dockerfile.dev
+        # image: rpl-erp-client-web:dev
+        env_file:
+            - ./apps/client-web/.env.dev
+        ports:
+            - "${DEV_CLIENT_WEB_PORT}:${DEV_CLIENT_WEB_PORT}"
+        restart: unless-stopped
+        volumes:
+            - ./:/app
+            - /app/node_modules
+            - /app/apps/client-web/node_modules
 
-    networks:
-      - dev-network
-    depends_on:
-      - dev-server
-  dev-server:
-    profiles:
-      - dev
-    build:
-      context: .
-      dockerfile: ./apps/server/Dockerfile.dev
-    # image: rpl-erp-server:dev
-    env_file:
-      - ./apps/server/.env.dev
-    ports:
-      - "${DEV_SERVER_PORT}:${DEV_SERVER_PORT}"
-    restart: unless-stopped
-    volumes:
-      - ./:/app
-      - /app/node_modules
-      - /app/apps/server/node_modules
-    networks:
-      - dev-network
-    depends_on:
-      - dev-db
-  dev-db:
-    profiles:
-      - dev
-    image: postgres:alpine
-    env_file:
-      - ./apps/server/.env.dev
-    restart: unless-stopped
-    volumes:
-      - dev-db-data:/var/lib/postgresql/data
-    networks:
-      - dev-network
+        networks:
+            - dev-network
+        depends_on:
+            - dev-server
+    dev-server:
+        profiles:
+            - dev
+        build:
+            context: .
+            dockerfile: ./apps/server/Dockerfile.dev
+        # image: rpl-erp-server:dev
+        env_file:
+            - ./apps/server/.env.dev
+        ports:
+            - "${DEV_SERVER_PORT}:${DEV_SERVER_PORT}"
+        restart: unless-stopped
+        volumes:
+            - ./:/app
+            - /app/node_modules
+            - /app/apps/server/node_modules
+        networks:
+            - dev-network
+        depends_on:
+            - dev-db
+        user: "${UID:-1000}:${GID:-1000}"
+    dev-db:
+        profiles:
+            - dev
+        image: postgres:alpine
+        env_file:
+            - ./apps/server/.env.dev
+        restart: unless-stopped
+        volumes:
+            - dev-db-data:/var/lib/postgresql/data
+        networks:
+            - dev-network
 
-  # production containers
+    # production containers
 
-  prod-client-web:
-    profiles:
-      - prod
-    build:
-      context: .
-      dockerfile: ./apps/client-web/Dockerfile.prod
-    env_file:
-      - ./apps/client-web/.env.prod
-    ports:
-      - "${PROD_CLIENT_WEB_PORT}:${PROD_CLIENT_WEB_PORT}"
-    networks:
-      - prod-network
-    depends_on:
-      - prod-server
-  prod-server:
-    profiles:
-      - prod
-    build:
-      context: .
-      dockerfile: ./apps/server/Dockerfile.prod
-    env_file:
-      - ./apps/server/.env.prod
-    ports:
-      - "${PROD_SERVER_PORT}:${PROD_SERVER_PORT}"
-    networks:
-      - prod-network
-    depends_on:
-      - prod-db
-  prod-db:
-    profiles:
-      - prod
-    image: postgres:alpine
-    env_file:
-      - ./apps/server/.env.prod
-    volumes:
-      - prod-db-data:/var/lib/postgresql/data
-    networks:
-      - prod-network
+    prod-client-web:
+        profiles:
+            - prod
+        build:
+            context: .
+            dockerfile: ./apps/client-web/Dockerfile.prod
+        env_file:
+            - ./apps/client-web/.env.prod
+        ports:
+            - "${PROD_CLIENT_WEB_PORT}:${PROD_CLIENT_WEB_PORT}"
+        networks:
+            - prod-network
+        depends_on:
+            - prod-server
+    prod-server:
+        profiles:
+            - prod
+        build:
+            context: .
+            dockerfile: ./apps/server/Dockerfile.prod
+        env_file:
+            - ./apps/server/.env.prod
+        ports:
+            - "${PROD_SERVER_PORT}:${PROD_SERVER_PORT}"
+        networks:
+            - prod-network
+        depends_on:
+            - prod-db
+    prod-db:
+        profiles:
+            - prod
+        image: postgres:alpine
+        env_file:
+            - ./apps/server/.env.prod
+        volumes:
+            - prod-db-data:/var/lib/postgresql/data
+        networks:
+            - prod-network
 
 volumes:
-  dev-db-data:
-  test-db-data:
-  prod-db-data:
+    dev-db-data:
+    test-db-data:
+    prod-db-data:
 
 networks:
-  dev-network:
-    driver: bridge
-  test-network:
-    driver: bridge
-  prod-network:
-    driver: bridge
-
+    dev-network:
+        driver: bridge
+    test-network:
+        driver: bridge
+    prod-network:
+        driver: bridge
