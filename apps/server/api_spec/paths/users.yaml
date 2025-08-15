@@ -1,0 +1,172 @@
+users:
+    get:
+        tags: [Users]
+        summary: Get all users
+        responses:
+            "200":
+                description: List of users
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/User"
+    post:
+        tags: [Users]
+        summary: Create a new user
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            email:
+                                type: string
+                                format: email
+                            password:
+                                type: string
+                        required: [email, password]
+        responses:
+            "201":
+                description: User created successfully
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/User"
+            "400":
+                description: Invalid input
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+
+users_by_id:
+    get:
+        tags: [Users]
+        summary: Get user by ID
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: User found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/User"
+            "404":
+                description: User not found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+    put:
+        tags: [Users]
+        summary: Update user
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            email:
+                                type: string
+                                format: email
+                            password:
+                                type: string
+        responses:
+            "200":
+                description: User updated successfully
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/User"
+            "404":
+                description: User not found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+    delete:
+        tags: [Users]
+        summary: Delete user
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "204":
+                description: User deleted successfully
+            "404":
+                description: User not found
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/Error"
+
+user_roles:
+    get:
+        tags: [Users]
+        summary: Get roles for a user
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        responses:
+            "200":
+                description: List of roles for the user
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: "../schemas/index.yaml#/Role"
+    post:
+        tags: [Users]
+        summary: Assign role to user
+        parameters:
+            - name: id
+              in: path
+              required: true
+              schema:
+                  type: string
+                  format: uuid
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            role_id:
+                                type: string
+                                format: uuid
+                            priority:
+                                type: integer
+                        required: [role_id, priority]
+        responses:
+            "201":
+                description: Role assigned to user successfully
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../schemas/index.yaml#/UserRole"
