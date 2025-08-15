@@ -13,10 +13,11 @@ import { TypeOrmModule } from "@nestjs/typeorm";
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
+        const DOCKERIZED = configService.get<string>("DOCKERIZED");
         return {
           type: "postgres",
           host:
-            configService.get<string>("DOCKERIZED") === "true"
+            !DOCKERIZED || DOCKERIZED === "true"
               ? configService.getOrThrow<string>("POSTGRES_HOST")
               : "localhost",
           port: configService.getOrThrow<number>("POSTGRES_PORT"),
