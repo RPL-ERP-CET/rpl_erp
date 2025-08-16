@@ -2,20 +2,13 @@
 
 import ContentBox from "@client-web/components/ui/contentbox";
 import Header from "@client-web/components/ui/header";
-import Sidebar from "@client-web/components/ui/sidebar";
+import { Sidebar, SidebarItemProps } from "@client-web/components/ui/sidebar";
 import React, { ReactNode } from "react";
-
-export type SidebarItem = {
-    label: string;
-    icon: React.ReactNode;
-    active?: boolean;
-    onClick?: () => void;
-};
 
 type ModuleLayoutProps = {
     children: ReactNode;
     title?: string;
-    sidebarItems?: SidebarItem[];
+    sidebarItems?: SidebarItemProps[];
     onBackClick?: () => void;
 };
 
@@ -27,19 +20,35 @@ export default function ModuleLayout({
 }: ModuleLayoutProps) {
     const userName = "Athul Anoop";
     const userInitials = "AA";
+
+    // Fallback back handler
+    const handleBack = () => {
+        if (onBackClick) {
+            onBackClick();
+        } else {
+            console.log("Back button clicked");
+        }
+    };
+
     return (
         <div className="w-screen h-screen overflow-hidden fixed top-0 left-0 bg-green-100">
-            <div className="w-full sticky top-0 z-50 border-2">
+            {/* Header */}
+            <div className="w-full sticky top-0 z-50 border-b-2">
                 <Header
                     title={title}
                     userName={userName}
                     userInitials={userInitials}
                 />
             </div>
+
+            {/* Main content */}
             <div className="w-full h-full flex">
-                <div className="sticky left-0 z-50 border-1">
-                    <Sidebar items={sidebarItems} onBackClick={onBackClick} />
+                {/* Sidebar */}
+                <div className="sticky left-0 z-50 border-r-1">
+                    <Sidebar items={sidebarItems} onBackClick={handleBack} />
                 </div>
+
+                {/* Page content */}
                 <div className="flex-1 p-6">
                     <ContentBox>{children}</ContentBox>
                 </div>

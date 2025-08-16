@@ -1,24 +1,39 @@
-import React from "react";
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cn } from "@client-web/lib/utils";
+import { ScrollArea } from "@client-web/components/ui/scroll-area"; // use your Radix ScrollArea file
 
-interface SimpleBoxProps {
+interface ContentBoxProps {
     children?: React.ReactNode;
     className?: string;
+    asChild?: boolean;
 }
 
-export default function ContentBox({
-    children,
-    className = "",
-}: SimpleBoxProps) {
-    return (
-        <div
-            className={`bg-white rounded-3xl shadow-lg mx-auto flex items-center justify-center ${className}`}
-            style={{
-                marginTop: "var(--content-position-top)",
-                width: "var(--content-width)",
-                height: "var(--content-height)",
-            }}
-        >
-            {children}
-        </div>
-    );
-}
+const ContentBox = React.forwardRef<HTMLDivElement, ContentBoxProps>(
+    ({ children, className = "", asChild = false }, ref) => {
+        const Comp = asChild ? Slot : "div";
+
+        return (
+            <Comp
+                ref={ref}
+                className={cn(
+                    "bg-white rounded-3xl shadow-lg mx-auto overflow-hidden",
+                    className,
+                )}
+                style={{
+                    marginTop: "var(--content-position-top)",
+                    width: "var(--content-width)",
+                    height: "var(--content-height)",
+                }}
+            >
+                <ScrollArea className="w-full h-full p-1">
+                    {children}
+                </ScrollArea>
+            </Comp>
+        );
+    },
+);
+
+ContentBox.displayName = "ContentBox";
+
+export default ContentBox;
