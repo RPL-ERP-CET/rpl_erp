@@ -21,6 +21,8 @@ services:
       - dev-network
     depends_on:
       - dev-server
+    user: "${UID:-1000}:${GID:-1000}"
+
   dev-server:
     profiles:
       - dev
