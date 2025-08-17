@@ -1,6 +1,7 @@
 "use client";
 
-import ModuleLayout, { SidebarItem } from "../ModuleLayout"; // Adjust path as needed
+import { SidebarItemProps } from "@client-web/components/ui/sidebar";
+import ModuleLayout from "../ModuleLayout"; // Adjust path as needed
 import {
     User, // for User_session
     UserCircle, // for Profile
@@ -21,7 +22,7 @@ export default function AuthenticationModuleLayout({
     const router = useRouter();
     const pathname = usePathname();
 
-    const authentication_items: SidebarItem[] = [
+    const authentication_items: SidebarItemProps[] = [
         {
             label: "User Session",
             icon: <User />,
