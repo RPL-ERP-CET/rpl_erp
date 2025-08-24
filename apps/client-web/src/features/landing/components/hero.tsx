@@ -33,7 +33,7 @@ export default function Hero() {
       return { data: PRODUCTS };
     });
   return (
-    <section className="w-full h-full px-8 py-16 flex justify-center items-center gap-4 bg-gradient-to-b from-emerald-800 to-emerald-900">
+    <section className="w-full h-full px-8 py-16 flex justify-center items-center gap-4 bg-gradient-to-b from-emerald-800 to-emerald-900 sm:px-24 xl:px-64">
       <Suspense fallback={<BannerCarousel />}>
         <BannerCarousel itemsPromise={bannerCarouselItemsPromise} />
       </Suspense>

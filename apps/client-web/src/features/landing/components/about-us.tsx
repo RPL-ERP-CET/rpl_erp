@@ -44,7 +44,10 @@ function AboutUs({ contentPromise }: AboutUsProps) {
     ? Array(3).fill(null)
     : use(contentPromise).data;
   return (
-    <section id="about-us" className="px-8 py-16 flex gap-4 bg-white">
+    <section
+      id="about-us"
+      className="px-8 py-16 flex flex-col gap-4 bg-white sm:px-24 lg:flex-row xl:px-64"
+    >
       {content.map((content: AboutUsContent, index: number) =>
         shouldUseSkeleton ? (
           <AboutUsCardSkeleton key={index} />
