@@ -1,28 +1,108 @@
 import { Mail, Phone, type LucideIcon } from "lucide-react";
+import { Suspense, use } from "react";
 import Link from "next/link";
+import { CONTACT_INFO } from "@client-web/features/landing/mocks";
+import { Shimmer } from "@client-web/components";
 
-const CONTACT_INFO_PHONE = [
-  {
-    icon: Phone,
-    text: "0475 – 2222971",
-    href: "tel:04752222971",
-  },
-  { icon: Phone, text: "0475 – 2222972", href: "tel:04752222972" },
-  { icon: Phone, text: "0475 – 2222973", href: "tel:04752222973" },
-];
+type ContactInfoGridProps = {
+  contactInfoPromise?: Promise<{
+    data: {
+      phone: string[];
+      email: string[];
+    };
+  }>;
+};
 
-const CONTACT_INFO_EMAIL = [
-  {
-    icon: Mail,
-    text: "mdrplpunalur@gmail.com",
-    href: "mailto:mdrplpunalur@gmail.com",
-  },
-  {
-    icon: Mail,
-    text: "mdrpl@sancharnet.in",
-    href: "mailto:mdrpl@sancharnet.in",
-  },
-];
+export default function ContactUs() {
+  const contactInfoPromise = fetch("/cms/landing/contact-us")
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to fetch contact info");
+      }
+      return res.json();
+    })
+    .catch(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      return {
+        data: CONTACT_INFO,
+      };
+    });
+  return (
+    <section id="contact-us" className="">
+      <div className="max-w-4xl mx-auto flex flex-col items-center gap-8 py-8 px-6 text-center bg-emerald-800 border rounded-xl">
+        {/* Heading */}
+        <div className="space-y-3">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white">
+            Contact Us
+          </h1>
+          <p className="max-w-2xl mx-auto text-white">
+            Have questions or need assistance? Reach out to us via phone or
+            email, we’d love to hear from you.
+          </p>
+        </div>
+
+        {/* Contact Info Grid */}
+        <Suspense fallback={<ContactInfoGrid />}>
+          <ContactInfoGrid contactInfoPromise={contactInfoPromise} />
+        </Suspense>
+      </div>
+    </section>
+  );
+}
+
+function ContactInfoGrid({ contactInfoPromise }: ContactInfoGridProps) {
+  const shouldUseSkeleton = contactInfoPromise === undefined;
+  const contactInfo = shouldUseSkeleton
+    ? {
+        phone: Array(3).fill(""),
+        email: Array(2).fill(""),
+      }
+    : use(contactInfoPromise).data;
+  return (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-2xl text-left">
+        {contactInfo.phone.map(
+          (item: { text: string; href?: string }, index: number) => (
+            <div
+              key={index}
+              className="flex items-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+            >
+              {shouldUseSkeleton ? (
+                <ContactInfoItemSkeleton />
+              ) : (
+                <ContactInfoItem
+                  icon={Phone}
+                  text={item.text}
+                  href={item.href}
+                />
+              )}
+            </div>
+          ),
+        )}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl text-left">
+        {contactInfo.email.map(
+          (item: { text: string; href?: string }, index: number) => (
+            <div
+              key={index}
+              className="flex items-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+            >
+              {shouldUseSkeleton ? (
+                <ContactInfoItemSkeleton />
+              ) : (
+                <ContactInfoItem
+                  icon={Mail}
+                  text={item.text}
+                  href={item.href}
+                />
+              )}
+            </div>
+          ),
+        )}
+      </div>
+    </>
+  );
+}
 
 function ContactInfoItem({
   icon: Icon,
@@ -53,51 +133,18 @@ function ContactInfoItem({
   );
 }
 
-export default function ContactUs() {
+function ContactInfoItemSkeleton() {
   return (
-    <section id="contact-us" className="">
-      <div className="max-w-4xl mx-auto flex flex-col items-center gap-8 py-8 px-6 text-center bg-emerald-800 border rounded-xl">
-        {/* Heading */}
-        <div className="space-y-3">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-            Contact Us
-          </h1>
-          <p className="max-w-2xl mx-auto text-white">
-            Have questions or need assistance? Reach out to us via phone or
-            email, we’d love to hear from you.
-          </p>
-        </div>
-
-        {/* Contact Info Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-2xl text-left">
-          {CONTACT_INFO_PHONE.map((item) => (
-            <div
-              key={item.text}
-              className="flex items-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100"
-            >
-              <ContactInfoItem
-                icon={item.icon}
-                text={item.text}
-                href={item.href}
-              />
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl text-left">
-          {CONTACT_INFO_EMAIL.map((item) => (
-            <div
-              key={item.text}
-              className="flex items-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100"
-            >
-              <ContactInfoItem
-                icon={item.icon}
-                text={item.text}
-                href={item.href}
-              />
-            </div>
-          ))}
-        </div>
+    <div className="flex items-center space-x-3">
+      {/* Icon placeholder */}
+      <div className="h-5 w-5 rounded-full bg-gray-200 relative overflow-hidden">
+        <Shimmer />
       </div>
-    </section>
+
+      {/* Text placeholder */}
+      <div className="h-5 w-32 bg-gray-200 rounded relative overflow-hidden">
+        <Shimmer />
+      </div>
+    </div>
   );
 }

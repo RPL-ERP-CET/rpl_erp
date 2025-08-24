@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { Suspense, use } from "react";
+import { EXECUTIVE_TEAM_MEMBERS } from "../mocks";
+import { Shimmer } from "@client-web/components";
 
 export type ExecutiveTeamMember = {
   name: string;
@@ -8,48 +11,53 @@ export type ExecutiveTeamMember = {
   image?: string;
 };
 
-export const boardOfDirectors: ExecutiveTeamMember[] = [
-  {
-    name: "Dr. K. Vasuki, IAS",
-    designation:
-      "Chairperson, RPL; Secretary to Government, Labour and Skills Department",
-    organizationAddress: "Government Secretariat, Thiruvananthapuram, Kerala.",
-  },
-  {
-    name: "Shri. Y. M. Shajikumar, IFS",
-    designation: "Managing Director, Rehabilitation Plantations Limited",
-    organizationAddress: "Punalur-691305",
-    contactNumber: ["0475-2222910", "9447112971"],
-  },
-  {
-    name: "Dr. Sanjayan Kumar, IFS",
-    designation: "Chief Conservator of Forests (IT)",
-    organizationAddress:
-      "Forest Head Quarters, Vazhuthakkadu, Thiruvananthapuram, Kerala.",
-  },
-  {
-    name: "Shri. Makkhan Lal Meeena",
-    designation: "Joint Secretary, Ministry of Home Affairs (FFR Division)",
-    organizationAddress:
-      "2nd Floor, NDCC-II Building, Jai Singh Road, New Delhi.",
-  },
-  {
-    name: "Dr. Anitha Thampi",
-    designation: "Chairman and Managing Director, HLL Lifecare Limited",
-    organizationAddress: "Poojappura, Thiruvananthapuram.",
-  },
-  {
-    name: "Ms. Preetha B.",
-    designation:
-      "Additional Secretary to Government, Labour & Skills Department",
-    organizationAddress: "Government Secretariat, Thiruvananthapuram.",
-  },
-  {
-    name: "Shri. V. Sivaprasad",
-    designation: "Under Secretary to Government, Finance Department",
-    organizationAddress: "Government Secretariat, Thiruvananthapuram.",
-  },
-];
+type ExecutiveTeamProps = {
+  executiveTeamPromise?: Promise<{ data: ExecutiveTeamMember[] }>;
+};
+
+export default function ExecutiveTeamContainer() {
+  const executiveTeamPromise = fetch("/cms/landing/executive-team")
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to fetch executive team");
+      }
+      return res.json();
+    })
+    .catch(() => {
+      return { data: EXECUTIVE_TEAM_MEMBERS };
+    });
+  return (
+    <Suspense fallback={<ExecutiveTeam />}>
+      <ExecutiveTeam executiveTeamPromise={executiveTeamPromise} />
+    </Suspense>
+  );
+}
+
+function ExecutiveTeam({ executiveTeamPromise }: ExecutiveTeamProps) {
+  const shouldUseSkeleton = executiveTeamPromise === undefined;
+  const executiveTeam = shouldUseSkeleton
+    ? Array(3).fill(null)
+    : use(executiveTeamPromise).data;
+
+  return (
+    <section id="executive-team" className="py-16 overflow-hidden">
+      <div className="container mx-auto px-4 flex flex-col justify-between gap-16 text-center">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Executive Team
+        </h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {executiveTeam.map((member: ExecutiveTeamMember, index: number) =>
+            shouldUseSkeleton ? (
+              <ExecutiveTeamMemberSkeleton key={index} />
+            ) : (
+              <ExecutiveTeamMember member={member} key={index} />
+            ),
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function ExecutiveTeamMember({ member }: { member: ExecutiveTeamMember }) {
   return (
@@ -87,19 +95,35 @@ function ExecutiveTeamMember({ member }: { member: ExecutiveTeamMember }) {
   );
 }
 
-export default function ExecutiveTeam() {
+function ExecutiveTeamMemberSkeleton() {
   return (
-    <section id="executive-team" className="bg-gray-50 py-16 overflow-hidden">
-      <div className="container mx-auto px-4 flex flex-col justify-between gap-16 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Executive Team
-        </h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {boardOfDirectors.map((member) => (
-            <ExecutiveTeamMember key={member.name} member={member} />
-          ))}
+    <div className="flex flex-col justify-start items-center">
+      {/* Avatar */}
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-32 h-32 rounded-full bg-gray-200 relative overflow-hidden">
+          <Shimmer />
+        </div>
+
+        {/* Name */}
+        <div className="mt-3 h-6 w-40 bg-gray-200 rounded relative overflow-hidden">
+          <Shimmer />
+        </div>
+
+        {/* Designation */}
+        <div className="mt-2 h-4 w-28 bg-gray-200 rounded relative overflow-hidden">
+          <Shimmer />
         </div>
       </div>
-    </section>
+
+      {/* Address + Contact */}
+      <div className="mt-4 flex flex-col items-center justify-center space-y-2">
+        <div className="h-4 w-56 bg-gray-200 rounded relative overflow-hidden">
+          <Shimmer />
+        </div>
+        <div className="h-4 w-36 bg-gray-200 rounded relative overflow-hidden">
+          <Shimmer />
+        </div>
+      </div>
+    </div>
   );
 }
