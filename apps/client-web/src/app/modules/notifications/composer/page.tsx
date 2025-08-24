@@ -1,10 +1,3 @@
-import NotificationsModuleLayout from "../layout";
-
-export default function ComposerPage() {
-    return (
-        <NotificationsModuleLayout>
-            {/* Your notifications page main content */}
-            <div>Notifications content here</div>
-        </NotificationsModuleLayout>
-    );
+export default function composerPage() {
+    return <div>composer content here</div>;
 }

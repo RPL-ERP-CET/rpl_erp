@@ -1,10 +1,3 @@
-import AuthenticationModuleLayout from "../layout";
-
-export default function SessionManagementPage() {
-    return (
-        <AuthenticationModuleLayout>
-            {/* Your notifications page main content */}
-            <div>Notifications content here</div>
-        </AuthenticationModuleLayout>
-    );
+export default function SessionPage() {
+    return <div>Session content here</div>;
 }

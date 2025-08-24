@@ -1,10 +1,3 @@
-import AuthenticationModuleLayout from "../layout";
-
-export default function RoleManagementPage() {
-    return (
-        <AuthenticationModuleLayout>
-            {/* Your notifications page main content */}
-            <div>Notifications content here</div>
-        </AuthenticationModuleLayout>
-    );
+export default function roleManagePage() {
+    return <div>roleManage content here</div>;
 }
