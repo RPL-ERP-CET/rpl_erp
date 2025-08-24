@@ -58,10 +58,10 @@ export default function BannerCarousel({
                                 <div className="flex flex-col md:flex-row h-full w-full">
                                     {/* Text Content */}
                                     <div className="flex-2 p-4 flex flex-col justify-center">
-                                        <h1 className="text-2xl font-bold mb-2 xl:text-7xl">
+                                        <h1 className="text-3xl md:text-5xl xl:text-7xl font-extrabold mb-4 text-emerald-800 leading-tight">
                                             {item.title}
                                         </h1>
-                                        <p className="text-lg text-gray-700">
+                                        <p className="text-lg md:text-xl text-gray-700 max-w-xl">
                                             {item.description}
                                         </p>
                                     </div>
