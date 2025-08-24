@@ -30,8 +30,8 @@ export default function Nav() {
   return (
     <nav
       className={cn(
-        "sticky top-0 z-50 w-full h-20 flex justify-between items-center border-b border-emerald-700/40",
-        "bg-emerald-800 backdrop-blur-md shadow-md",
+        "sticky top-0 z-50 w-full h-20 flex justify-between items-center border-b border-primary/40",
+        "bg-primary backdrop-blur-md shadow-md",
       )}
       aria-label="Main site navigation"
     >
@@ -61,7 +61,7 @@ export default function Nav() {
               <NavigationMenuItem key={name}>
                 <NavigationMenuLink
                   href={href}
-                  className="relative px-5 py-2.5 font-medium text-white rounded-full border border-transparent hover:text-white hover:border-2 hover:border-emerald-500/40 hover:bg-emerald-800 hover:font-bold hover:scale-x-105 hover:shadow-lg hover:shadow-emerald-500/20 focus:outline-none active:bg-emerald-800 active:text-white transition-all duration-500"
+                  className="relative px-5 py-2.5 font-medium text-white rounded-full border border-transparent hover:text-white hover:border-2 hover:border-secondary/40 hover:bg-accent hover:font-bold hover:scale-x-105 hover:shadow-lg hover:shadow-accent/20 focus:outline-none active:bg-accent active:text-white transition-all duration-500"
                 >
                   {name}
                 </NavigationMenuLink>
@@ -83,7 +83,7 @@ export default function Nav() {
 }
 export function SigninButton() {
   return (
-    <Button className="group relative flex items-center gap-2 rounded-full bg-emerald-700 px-5 py-2.5 text-white text-sm font-semibold shadow-md border border-emerald-500/40 transition-all duration-300 hover:border-2 hover:bg-emerald-800 hover:shadow-lg hover:shadow-emerald-500/20 focus:outline-none">
+    <Button className="group relative flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-white text-sm font-semibold shadow-md border border-secondary/40 transition-all duration-300 hover:border-2 hover:bg-accent hover:shadow-lg hover:shadow-accent/20 focus:outline-none">
       {/* Icon */}
       <LogIn className="h-4 w-4 transition-all duration-300" />
 

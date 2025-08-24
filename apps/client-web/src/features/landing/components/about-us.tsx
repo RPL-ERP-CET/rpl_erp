@@ -46,7 +46,7 @@ function AboutUs({ contentPromise }: AboutUsProps) {
   return (
     <section
       id="about-us"
-      className="px-8 py-16 flex flex-col gap-4 bg-white sm:px-24 lg:flex-row xl:px-64"
+      className="px-8 py-16 flex flex-col gap-4 bg-primary-foreground sm:px-24 lg:flex-row xl:px-64"
     >
       {content.map((content: AboutUsContent, index: number) =>
         shouldUseSkeleton ? (
@@ -61,7 +61,7 @@ function AboutUs({ contentPromise }: AboutUsProps) {
 
 const AboutUsCard = ({ content }: { content: AboutUsContent }) => {
   return (
-    <div className="relative w-full h-96 shadow-md rounded-2xl border overflow-hidden group hover:shadow-emerald-500/40 hover:border-emerald-400 transition-all ease-in-out duration-500">
+    <div className="relative w-full h-96 shadow-md rounded-2xl overflow-hidden group hover:shadow-primary/40 hover:border hover:border-primary/40 transition-all ease-in-out duration-500">
       {/* Background Image with hover zoom */}
       <Image
         src={content.image}
@@ -72,7 +72,7 @@ const AboutUsCard = ({ content }: { content: AboutUsContent }) => {
       />
 
       {/* Overlay with gradient */}
-      <div className="absolute bottom-0 left-0 w-full p-6 z-10 bg-gradient-to-t from-emerald-700/90 via-emerald-500/70 to-transparent text-white transition-all duration-700 ease-in-out max-h-24 group-hover:max-h-full overflow-hidden">
+      <div className="absolute bottom-0 left-0 w-full p-6 z-10 bg-gradient-to-t from-primary/90 via-primary/70 to-transparent text-white transition-all duration-700 ease-in-out max-h-24 group-hover:max-h-full overflow-hidden">
         {/* Title (always visible, animates slightly on hover) */}
         <h2 className="text-2xl font-extrabold tracking-wide drop-shadow-md transition-all duration-700 group-hover:translate-y-[-4px]">
           {content.title}

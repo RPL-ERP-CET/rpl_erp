@@ -31,7 +31,7 @@ export default function ProductsTable({
     : use(productsPromise).data;
   return (
     <div className={cn("w-min h-96 flex", className)}>
-      <Table className="h-full rounded-lg bg-white">
+      <Table className="h-full rounded-lg bg-primary-foreground">
         <TableHeader>
           <TableRow>
             <TableHead>Item</TableHead>

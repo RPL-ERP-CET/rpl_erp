@@ -27,14 +27,14 @@ export default function ContactUs() {
       };
     });
   return (
-    <section id="contact-us" className="">
-      <div className="max-w-4xl mx-auto flex flex-col items-center gap-8 py-8 px-6 text-center bg-emerald-800 border rounded-xl">
+    <section id="contact-us" className="py-16 bg-primary">
+      <div className="max-w-4xl mx-auto flex flex-col items-center gap-8 py-8 px-6 text-center bg-primary-foreground border border-primary/40 rounded-xl">
         {/* Heading */}
         <div className="space-y-3">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-secondary">
             Contact Us
           </h1>
-          <p className="max-w-2xl mx-auto text-white">
+          <p className="max-w-2xl mx-auto text-secondary font-medium">
             Have questions or need assistance? Reach out to us via phone or
             email, we’d love to hear from you.
           </p>
@@ -64,7 +64,7 @@ function ContactInfoGrid({ contactInfoPromise }: ContactInfoGridProps) {
           (item: { text: string; href?: string }, index: number) => (
             <div
               key={index}
-              className="flex items-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+              className="flex items-center p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow text-secondary-foreground border border-secondary/40 bg-secondary"
             >
               {shouldUseSkeleton ? (
                 <ContactInfoItemSkeleton />
@@ -84,7 +84,7 @@ function ContactInfoGrid({ contactInfoPromise }: ContactInfoGridProps) {
           (item: { text: string; href?: string }, index: number) => (
             <div
               key={index}
-              className="flex items-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+              className="flex items-center p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow text-primary-foreground border border-secondary/40 bg-secondary"
             >
               {shouldUseSkeleton ? (
                 <ContactInfoItemSkeleton />
@@ -114,17 +114,13 @@ function ContactInfoItem({
 }) {
   const content = (
     <div className="flex items-center space-x-3">
-      <Icon className="h-5 w-5 shrink-0 text-emerald-700" />
-      <span className="text-gray-700 text-base">{text}</span>
+      <Icon className="h-5 w-5 shrink-0 text-primary-foreground" />
+      <span className="text-primary-foreground text-base">{text}</span>
     </div>
   );
 
   return href ? (
-    <Link
-      href={href}
-      className="hover:text-emerald-700 transition-colors"
-      target={href.startsWith("http") ? "_blank" : undefined}
-    >
+    <Link href={href} target={href.startsWith("http") ? "_blank" : undefined}>
       {content}
     </Link>
   ) : (

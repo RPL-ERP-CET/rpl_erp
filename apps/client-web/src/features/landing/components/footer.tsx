@@ -112,7 +112,7 @@ const LEGAL_LINKS = [
 function InfoItem({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   return (
     <div className="flex items-start justify-center space-x-2">
-      <Icon className="h-4 w-4 shrink-0 text-emerald-800" />
+      <Icon className="h-4 w-4 shrink-0 text-primary" />
       <span className="text-gray-600 text-sm">{text}</span>
     </div>
   );
@@ -121,13 +121,13 @@ function InfoItem({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
 function LinkList({ title, items }: { title: string; items: LinkItem[] }) {
   return (
     <div className="flex flex-col items-start space-y-6">
-      <h3 className="text-lg font-bold text-emerald-800">{title}</h3>
+      <h3 className="text-lg font-bold text-primary">{title}</h3>
       <nav className="flex flex-col items-start space-y-3">
         {items.map((item, index) => (
           <Link
             key={index}
             href={item.href}
-            className="block text-gray-600 hover:text-emerald-800 hover:translate-x-1 transition-all duration-200 font-medium"
+            className="block text-gray-600 hover:text-accent hover:translate-x-1 transition-all duration-200 font-medium"
           >
             {item.text}
           </Link>
@@ -139,21 +139,21 @@ function LinkList({ title, items }: { title: string; items: LinkItem[] }) {
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-primary-foreground border-t border-gray-200">
       <div className="container mx-auto px-8 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Column 1 - Contact Info */}
           <div className="flex flex-col items-start space-y-6">
             <div className="flex items-start space-x-2">
-              <Building className="h-8 w-8 text-emerald-800" />
-              <span className="text-lg font-bold text-emerald-800">
+              <Building className="h-8 w-8 text-primary" />
+              <span className="text-lg font-bold text-primary">
                 Organization
               </span>
             </div>
 
             <div className="flex flex-col items-start space-y-4">
-              <h3 className="text-lg font-bold text-emerald-800">
+              <h3 className="text-lg font-bold text-primary">
                 Contact Information
               </h3>
 
@@ -200,7 +200,7 @@ export default function Footer() {
                 <Link
                   key={text}
                   href={href}
-                  className="text-gray-500 hover:text-emerald-800 text-sm transition-colors duration-200"
+                  className="text-gray-500 hover:text-primarytext-sm transition-colors duration-200"
                 >
                   {text}
                 </Link>

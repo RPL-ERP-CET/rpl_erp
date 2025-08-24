@@ -73,15 +73,15 @@ function BannerCarouselItem({
 }) {
   return (
     <CarouselItem className="rounded-lg overflow-hidden">
-      <Card className="py-0 rounded-lg overflow-hidden border-none shadow-none">
+      <Card className="py-0 rounded-lg overflow-hidden border-none shadow-none bg-primary-foreground">
         <CardContent className="p-0 h-96">
           <div className="flex flex-col md:flex-row h-full w-full">
             {/* Text Content */}
             <div className="flex-2 p-4 flex flex-col justify-center">
-              <h1 className="text-3xl md:text-5xl xl:text-7xl font-extrabold mb-4 text-emerald-800 leading-tight">
+              <h1 className="text-3xl md:text-5xl xl:text-7xl font-extrabold mb-4 text-primary leading-tight">
                 {item.title}
               </h1>
-              <p className="text-lg md:text-xl text-gray-700 max-w-xl">
+              <p className="text-lg md:text-xl text-primary/90 max-w-xl">
                 {item.description}
               </p>
             </div>

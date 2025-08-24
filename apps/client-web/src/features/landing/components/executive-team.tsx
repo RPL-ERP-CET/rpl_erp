@@ -40,7 +40,10 @@ function ExecutiveTeam({ executiveTeamPromise }: ExecutiveTeamProps) {
     : use(executiveTeamPromise).data;
 
   return (
-    <section id="executive-team" className="py-16 overflow-hidden">
+    <section
+      id="executive-team"
+      className="py-16 overflow-hidden bg-primary-foreground"
+    >
       <div className="container mx-auto px-4 flex flex-col justify-between gap-16 text-center">
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
           Executive Team

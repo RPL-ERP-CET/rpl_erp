@@ -61,7 +61,7 @@ export default function SearchBar() {
     <div
       className={cn(
         "flex items-center gap-2 rounded-3xl border border-transparent transition-all duration-300 ease-in-out",
-        isFocused && "bg-emerald-800 border-2 border-emerald-500/40 shadow-md",
+        isFocused && "bg-accent border-2 border-secondary/40 shadow-md",
       )}
       style={{ width: "fit-content", maxWidth: "100%" }}
     >
@@ -91,9 +91,9 @@ export default function SearchBar() {
       <Button
         onClick={handleSearchButtonClick}
         className={cn(
-          "w-9 bg-transparent rounded-full border border-emerald-500/40 hover:border-2",
-          "group relative flex items-center gap-2 rounded-full bg-emerald-700 px-5 py-2.5 text-white text-sm font-semibold shadow-md transition-all duration-300 hover:bg-emerald-800 hover:shadow-lg hover:shadow-emerald-500/20 focus:outline-none",
-          isFocused && "border-none hover:bg-emerald-700",
+          "w-9 bg-transparent rounded-full border border-secondary/40 hover:border-2",
+          "group relative flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-white text-sm font-semibold shadow-md transition-all duration-300 hover:bg-accent hover:shadow-lg hover:shadow-accent/20 focus:outline-none",
+          isFocused && "border-none hover:bg-accent",
         )}
       >
         <Search className={cn("h-4 w-4")} />
