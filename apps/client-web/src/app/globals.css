@@ -74,15 +74,15 @@
     --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
     --sidebar-border: oklch(0.92 0.004 286.32);
     --sidebar-ring: oklch(0.705 0.015 286.067);
-    /*jvp-styles header sidebar conten*/
+    /*styles header sidebar content*/
     --header-height: 70px; /* matches your Header.tsx height */
     --content-gap-vertical: 40px; /* vertical gap above & below content box */
     --border-radius: 9px;
     --logo-size: 45px;
     --logo-font-size: 45px;
     --sidebar-icon-name-gap: 30px;
-    --sidebar-width: 220px;
-    --sidebar-element-gap: 25px;
+    --sidebar-width: 238px;
+    --sidebar-element-gap: 30px;
     --backbutton-position-bottom: 100px;
     --content-width: 1250px;
     --content-height: 700px;
