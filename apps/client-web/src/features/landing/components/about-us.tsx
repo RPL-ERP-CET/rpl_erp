@@ -1,4 +1,7 @@
+import { Suspense, use } from "react";
 import Image from "next/image";
+import { Shimmer } from "@client-web/components";
+import { ABOUT_US_CONTENT } from "@client-web/features/landing/mocks";
 
 type AboutUsContent = {
   title: string;
@@ -6,29 +9,52 @@ type AboutUsContent = {
   image: string;
 };
 
-const ABOUT_US_CONTENT = [
-  {
-    title: "Ayiranallur Estate",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum ex beatae illo veritatis, delectus ab, quas tempora magni quis dolorem ut velit rerum minus officia harum nisi deleniti. Ab, magni!",
-    image:
-      "https://rplkerala.com/wp-content/uploads/2019/02/kulathupuzaestate-300x167.jpg",
-  },
-  {
-    title: "Kulathupuzha Estate",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum ex beatae illo veritatis, delectus ab, quas tempora magni quis dolorem ut velit rerum minus officia harum nisi deleniti. Ab, magni!",
-    image:
-      "https://rplkerala.com/wp-content/uploads/2019/02/kulathupuzaest001-300x167.jpg",
-  },
-  {
-    title: "Factories",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum ex beatae illo veritatis, delectus ab, quas tempora magni quis dolorem ut velit rerum minus officia harum nisi deleniti. Ab, magni!",
-    image:
-      "https://rplkerala.com/wp-content/uploads/2019/02/factory001-300x167.jpg",
-  },
-];
+type AboutUsResponse = {
+  data: AboutUsContent[];
+};
+
+type AboutUsProps = {
+  contentPromise?: Promise<AboutUsResponse>;
+};
+
+export default function AboutUs() {
+  const aboutUsContentPromise: Promise<AboutUsResponse> = fetch(
+    "/cms/landing/about-us",
+  )
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to fetch about us content");
+      }
+      return res.json();
+    })
+    .catch(() => {
+      return { data: ABOUT_US_CONTENT };
+    }) as Promise<AboutUsResponse>;
+
+  return (
+    <Suspense fallback={<AboutUsContent />}>
+      <AboutUsContent contentPromise={aboutUsContentPromise} />
+    </Suspense>
+  );
+}
+
+function AboutUsContent({ contentPromise }: AboutUsProps) {
+  const shouldUseSkeleton = contentPromise === undefined;
+  const content = shouldUseSkeleton
+    ? Array(3).fill(null)
+    : use(contentPromise).data;
+  return (
+    <section id="about-us" className="px-8 py-16 flex gap-4 bg-white">
+      {content.map((content: AboutUsContent, index: number) =>
+        shouldUseSkeleton ? (
+          <AboutUsCardSkeleton key={index} />
+        ) : (
+          <AboutUsCard key={index} content={content} />
+        ),
+      )}
+    </section>
+  );
+}
 
 const AboutUsCard = ({ content }: { content: AboutUsContent }) => {
   return (
@@ -61,12 +87,37 @@ const AboutUsCard = ({ content }: { content: AboutUsContent }) => {
   );
 };
 
-export default function AboutUs() {
+const AboutUsCardSkeleton = () => {
   return (
-    <section id="about-us" className="px-8 py-16 flex gap-4 bg-white">
-      {ABOUT_US_CONTENT.map((content, index) => (
-        <AboutUsCard key={index} content={content} />
-      ))}
-    </section>
+    <div className="relative w-full h-96 shadow-md rounded-2xl border overflow-hidden group transition-all ease-in-out duration-500">
+      {/* Background placeholder */}
+      <div className="absolute z-0 w-full h-full bg-gray-200 rounded-2xl overflow-hidden">
+        <Shimmer />
+      </div>
+
+      {/* Overlay with gradient */}
+      <div className="absolute bottom-0 left-0 w-full p-6 z-10 bg-gradient-to-t from-gray-400/60 via-gray-300/40 to-transparent text-white transition-all duration-700 ease-in-out max-h-24 group-hover:max-h-full overflow-hidden">
+        {/* Title placeholder */}
+        <div className="h-8 w-2/3 bg-gray-300 rounded relative overflow-hidden">
+          <Shimmer />
+        </div>
+
+        {/* Description placeholder */}
+        <div className="mt-3 space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-1000 ease-out delay-200">
+          <div className="h-4 w-full bg-gray-300 rounded relative overflow-hidden">
+            <Shimmer />
+          </div>
+          <div className="h-4 w-5/6 bg-gray-300 rounded relative overflow-hidden">
+            <Shimmer />
+          </div>
+          <div className="h-4 w-2/3 bg-gray-300 rounded relative overflow-hidden">
+            <Shimmer />
+          </div>
+        </div>
+      </div>
+
+      {/* Glow effect on hover (kept for consistency) */}
+      <div className="absolute inset-0 rounded-2xl pointer-events-none group-hover:ring-4 group-hover:ring-gray-300/30 transition-all duration-700"></div>
+    </div>
   );
-}
+};
