@@ -1,4 +1,4 @@
-import ModulePage from "./ModulePage";
+import ModulePage from "./Demo/page";
 
 export default function Home() {
     return (
