@@ -21,8 +21,7 @@ export default function ContactUs() {
       }
       return res.json();
     })
-    .catch(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+    .catch(() => {
       return {
         data: CONTACT_INFO,
       };
