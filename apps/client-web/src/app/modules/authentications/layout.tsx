@@ -1,9 +1,12 @@
 "use client";
 
-import { Sidebar, SidebarItemProps } from "@client-web/components/ui/sidebar";
+import {
+    Sidebar,
+    SidebarItemProps,
+} from "@client-web/components/custom/sidebar";
 import ModuleLayout from "../layout";
-import ContentBox from "@client-web/components/ui/contentbox";
-import Header from "@client-web/components/ui/header";
+import ContentBox from "@client-web/components/custom/contentbox";
+import Header from "@client-web/components/custom/header";
 import {
     User,
     UserCircle,

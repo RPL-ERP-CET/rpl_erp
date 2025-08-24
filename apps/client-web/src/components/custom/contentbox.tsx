@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cn } from "@client-web/lib/utils";
-import { ScrollArea } from "@client-web/components/ui/scroll-area"; // use your Radix ScrollArea file
+import { ScrollArea } from "@client-web/components/custom/scroll-area"; // use your Radix ScrollArea file
 
 interface ContentBoxProps {
     children?: React.ReactNode;
