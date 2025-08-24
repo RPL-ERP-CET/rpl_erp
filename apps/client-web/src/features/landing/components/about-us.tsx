@@ -17,7 +17,7 @@ type AboutUsProps = {
   contentPromise?: Promise<AboutUsResponse>;
 };
 
-export default function AboutUs() {
+export default function AboutUsContainer() {
   const aboutUsContentPromise: Promise<AboutUsResponse> = fetch(
     "/cms/landing/about-us",
   )
@@ -32,13 +32,13 @@ export default function AboutUs() {
     }) as Promise<AboutUsResponse>;
 
   return (
-    <Suspense fallback={<AboutUsContent />}>
-      <AboutUsContent contentPromise={aboutUsContentPromise} />
+    <Suspense fallback={<AboutUs />}>
+      <AboutUs contentPromise={aboutUsContentPromise} />
     </Suspense>
   );
 }
 
-function AboutUsContent({ contentPromise }: AboutUsProps) {
+function AboutUs({ contentPromise }: AboutUsProps) {
   const shouldUseSkeleton = contentPromise === undefined;
   const content = shouldUseSkeleton
     ? Array(3).fill(null)
