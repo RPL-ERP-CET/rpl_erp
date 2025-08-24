@@ -12,9 +12,9 @@ import Image from "next/image";
  * List of primary navigation items to be rendered in the navigation bar.
  */
 const navigationMenuItems = [
-    { name: "About", href: "/about" },
-    { name: "Executive Team", href: "/executive-team" },
-    { name: "Contact Us", href: "/contact" },
+    { name: "About", href: "#about-us" },
+    { name: "Executive Team", href: "#executive-team" },
+    { name: "Contact Us", href: "#contact-us" },
 ];
 
 /**

@@ -25,10 +25,26 @@ export default function SearchBar() {
     };
 
     /**
+     * Processes search query and performs search.
+     */
+    const performSearch = (query: string) => {
+        console.log("Searching for:", query);
+        // TODO: Replace with real search logic (API call, navigation, etc.)
+    };
+
+    /**
      * Handles search button click.
      * Toggles focus on the input field and visibility style changes.
      */
     const handleSearchButtonClick = () => {
+        if (searchTerm.trim().length > 0 && isFocused) {
+            performSearch(searchTerm);
+            return;
+        } else if (isFocused) {
+            console.log("Doing nothing");
+            return;
+        }
+
         setIsFocused((prev) => !prev);
         const inputEl = inputRef.current;
 
@@ -64,7 +80,11 @@ export default function SearchBar() {
                     placeholder="Search..."
                     value={searchTerm}
                     onChange={handleInputChange}
-                    onBlur={() => setIsFocused(false)}
+                    onBlur={() => {
+                        if (searchTerm.trim().length === 0 && isFocused) {
+                            setIsFocused(false);
+                        }
+                    }}
                     tabIndex={-1}
                     className="border-none shadow-none focus-visible:ring-0 w-full"
                 />
