@@ -60,9 +60,8 @@ export default function SearchBar() {
   return (
     <div
       className={cn(
-        "flex items-center gap-2 transition-all duration-300 ease-in-out",
-        "rounded-3xl border border-transparent",
-        isFocused && "ring-2 ring-accent bg-white",
+        "flex items-center gap-2 rounded-3xl border border-transparent transition-all duration-300 ease-in-out",
+        isFocused && "bg-emerald-800 border-2 border-emerald-500/40 shadow-md",
       )}
       style={{ width: "fit-content", maxWidth: "100%" }}
     >
@@ -70,9 +69,7 @@ export default function SearchBar() {
       <div
         className={cn(
           "overflow-hidden transition-all duration-300 ease-in-out",
-          isFocused
-            ? "w-48 opacity-100 px-2 text-zinc-900"
-            : "w-0 opacity-0 px-0",
+          isFocused ? "w-48 opacity-100 px-2" : "w-0 opacity-0 px-0",
         )}
       >
         <Input
@@ -86,21 +83,20 @@ export default function SearchBar() {
             }
           }}
           tabIndex={-1}
-          className="border-none shadow-none focus-visible:ring-0 w-full"
+          className="w-full text-white placeholder:text-white/50 border-none shadow-none focus-visible:outline-none focus-visible:ring-0"
         />
       </div>
 
       {/* Search icon button */}
       <Button
         onClick={handleSearchButtonClick}
-        variant="outline"
         className={cn(
-          "h-8 w-8 mr-1 bg-transparent rounded-full border-2 shadow-none",
-          isFocused &&
-            "border-none text-zinc-900 hover:text-accent hover:bg-emerald-700",
+          "w-9 bg-transparent rounded-full border border-emerald-500/40 hover:border-2",
+          "group relative flex items-center gap-2 rounded-full bg-emerald-700 px-5 py-2.5 text-white text-sm font-semibold shadow-md transition-all duration-300 hover:bg-emerald-800 hover:shadow-lg hover:shadow-emerald-500/20 focus:outline-none",
+          isFocused && "border-none hover:bg-emerald-700",
         )}
       >
-        <Search className="h-4 w-4" />
+        <Search className={cn("h-4 w-4")} />
       </Button>
     </div>
   );
