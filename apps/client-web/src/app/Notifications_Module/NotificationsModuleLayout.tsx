@@ -1,6 +1,7 @@
 "use client";
 
-import ModuleLayout, { SidebarItem } from "../ModuleLayout"; // Adjust path as needed
+import { SidebarItemProps } from "@client-web/components/ui/sidebar";
+import ModuleLayout from "../ModuleLayout"; // Adjust path as needed
 import {
     Bell,
     LayoutDashboard,
@@ -19,7 +20,7 @@ export default function NotificationsModuleLayout({
     const router = useRouter();
     const pathname = usePathname();
 
-    const notification_items: SidebarItem[] = [
+    const notification_items: SidebarItemProps[] = [
         {
             label: "Notifications",
             icon: <Bell />,

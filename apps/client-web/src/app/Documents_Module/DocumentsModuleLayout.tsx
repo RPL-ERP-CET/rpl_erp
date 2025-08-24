@@ -1,6 +1,7 @@
 "use client";
 
-import ModuleLayout, { SidebarItem } from "../ModuleLayout"; // Adjust path as needed
+import { SidebarItemProps } from "@client-web/components/ui/sidebar";
+import ModuleLayout from "../ModuleLayout"; // Adjust path as needed
 import {
     FileText, // for Documents
     FilePlus, // for Generate Document
@@ -17,7 +18,7 @@ export default function DocumentsModuleLayout({
     const router = useRouter();
     const pathname = usePathname();
 
-    const documents_items: SidebarItem[] = [
+    const documents_items: SidebarItemProps[] = [
         {
             label: "Documents",
             icon: <FileText />,
