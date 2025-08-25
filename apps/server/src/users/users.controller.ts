@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -20,7 +21,7 @@ export class UsersController {
   }
 
   @Get(":id")
-  getUser(@Param("id") id: string) {
+  getUser(@Param("id", ParseUUIDPipe) id: string) {
     return this.service.getUser(id);
   }
 
@@ -30,12 +31,15 @@ export class UsersController {
   }
 
   @Put(":id")
-  updateUser(@Param("id") id: string, @Body() dto: Partial<CreateUserDto>) {
+  updateUser(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: Partial<CreateUserDto>,
+  ) {
     return this.service.updateUser(id, dto);
   }
 
   @Delete(":id")
-  deleteUser(@Param("id") id: string) {
+  deleteUser(@Param("id", ParseUUIDPipe) id: string) {
     return this.service.deleteUser(id);
   }
 }
