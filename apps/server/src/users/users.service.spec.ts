@@ -51,8 +51,8 @@ describe("UsersService", () => {
 
   describe("Get User", () => {
     it("should return a single user", () => {
-      const reult = service.getUser("some-id");
-      expect(reult).toBeInstanceOf(Promise<User>);
+      const result = service.getUser("some-id");
+      expect(result).toBeInstanceOf(Promise<User>);
     });
   });
 
