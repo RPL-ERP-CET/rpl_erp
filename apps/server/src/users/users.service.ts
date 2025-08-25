@@ -25,13 +25,11 @@ export class UsersService {
 
   async createUser(dto: CreateUserDto): Promise<User> {
     const user = this.userRepo.create(dto);
-    if (!user) throw new Error("Could not create user"); // TODO: better error handling
     return await this.userRepo.save(user);
   }
 
   async updateUser(id: string, dto: Partial<CreateUserDto>): Promise<User> {
     const user = await this.getUser(id);
-    if (!user) throw new Error("User not found"); // TODO: better error handling
     return await this.userRepo.save({
       ...user,
       ...dto,
@@ -40,7 +38,6 @@ export class UsersService {
 
   async deleteUser(id: string): Promise<void> {
     const user = await this.getUser(id);
-    if (!user) throw new Error("User not found"); // TODO: better error handling
     await this.userRepo.remove(user);
   }
 }
