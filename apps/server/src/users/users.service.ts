@@ -1,8 +1,13 @@
-import { Injectable } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./users.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
+import bcrypt from "bcryptjs";
 
 @Injectable()
 export class UsersService {
@@ -19,8 +24,34 @@ export class UsersService {
     const user = await this.userRepo.findOne({
       where: { id },
     });
-    if (!user) throw new Error("User not found"); // TODO: better error handling
+    if (!user) throw new NotFoundException();
     return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.userRepo.findOne({
+      where: { email },
+    });
+    if (!user) throw new NotFoundException();
+    return user;
+  }
+
+  async comparePassword(email: string, password: string): Promise<boolean> {
+    const fetchedUser = await this.userRepo
+      .createQueryBuilder("user")
+      .where("user.email = :email", { email })
+      .addSelect("user.password")
+      .getOne();
+
+    if (!fetchedUser) throw new NotFoundException("User not found");
+
+    const comparePassword = await bcrypt.compare(
+      password,
+      fetchedUser.password,
+    );
+
+    if (!comparePassword) throw new UnauthorizedException();
+    return comparePassword;
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
