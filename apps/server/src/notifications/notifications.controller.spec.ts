@@ -10,7 +10,7 @@ describe("NotificationsController", () => {
 
   const mockNotificationDto: CreateNotificationDto = {
     content: "Test notification",
-    priority: "high",
+
     cooldown: 0,
     category: "info",
     sender: "system",
