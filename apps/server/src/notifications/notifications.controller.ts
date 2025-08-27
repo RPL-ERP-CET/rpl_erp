@@ -8,6 +8,7 @@ export class NotificationsController {
 
   @Post()
   createNotification(@Body() dto: CreateNotificationDto) {
+    //TODO: filter by category and unread
     return this.notificationsService.createNotification(dto);
   }
 

@@ -18,7 +18,7 @@ describe("NotificationsController", () => {
   const mockNotification: Partial<Notification> = {
     id: "1",
     content: "Test notification",
-    priority: "high",
+
     cooldown: 0,
     category: "info",
     sender: "system",

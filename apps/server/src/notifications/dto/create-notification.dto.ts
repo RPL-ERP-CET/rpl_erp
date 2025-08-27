@@ -1,7 +1,7 @@
 import {
   IsNotEmpty,
   IsString,
-  IsUUID,
+  // IsUUID,
   IsOptional,
   IsInt,
 } from "class-validator";
@@ -11,9 +11,10 @@ export class CreateNotificationDto {
   @IsString()
   declare content: string;
 
-  @IsNotEmpty()
-  @IsUUID()
-  declare priority: string;
+  // // @IsNotEmpty()
+  // @IsOptional()
+  // // @IsUUID()
+  // declare priority?: string;
 
   @IsOptional()
   @IsInt()

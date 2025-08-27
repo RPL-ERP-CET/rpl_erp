@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
+import { NotificationVisibilityUser } from "./notification-visibility-user.entity";
 
 @Entity("notifications")
 export class Notification {
@@ -14,8 +16,8 @@ export class Notification {
   @Column({ type: "varchar" })
   content!: string;
 
-  @Column({ type: "uuid" })
-  priority!: string;
+  // @Column({ type: "uuid" })
+  // priority!: string;
 
   @Column({ type: "integer", nullable: true })
   cooldown?: number;
@@ -34,4 +36,10 @@ export class Notification {
 
   @UpdateDateColumn({ type: "timestamp" })
   updated_at!: Date;
+
+  @OneToMany(
+    () => NotificationVisibilityUser,
+    (visibilityUser) => visibilityUser.notification,
+  )
+  visibleToUsers!: NotificationVisibilityUser[];
 }

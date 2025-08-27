@@ -18,7 +18,6 @@ describe("NotificationsService", () => {
     {
       id: "1",
       content: "Notification 1",
-      priority: "high",
       cooldown: 0,
       category: "info",
       sender: "system",
@@ -28,7 +27,6 @@ describe("NotificationsService", () => {
     {
       id: "2",
       content: "Notification 2",
-      priority: "low",
       cooldown: 10,
       category: "alert",
       sender: "admin",
@@ -73,7 +71,6 @@ describe("NotificationsService", () => {
   it("should create a notification and return it", async () => {
     const dto: CreateNotificationDto = {
       content: "Test notification",
-      priority: "high",
       cooldown: 0,
       category: "info",
       sender: "system",
