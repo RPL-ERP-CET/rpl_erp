@@ -5,6 +5,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Notification } from "./notifications.entity";
 import { NotificationVisibilityUser } from "./notification-visibility-user.entity";
+import { NotificationReadReceipt } from "./notification-read-receipt.entity";
 import { User } from "../users/users.entity";
 
 @Injectable()
@@ -15,6 +16,9 @@ export class NotificationsService {
 
     @InjectRepository(NotificationVisibilityUser)
     private visibilityRepository: Repository<NotificationVisibilityUser>,
+
+    @InjectRepository(NotificationReadReceipt)
+    private readReceiptRepository: Repository<NotificationReadReceipt>,
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -71,5 +75,65 @@ export class NotificationsService {
     });
 
     return this.visibilityRepository.save(visibilityEntry);
+  }
+
+  async createReadReceipt(
+    notificationId: string,
+    userId: string,
+  ): Promise<NotificationReadReceipt> {
+    // Check if notification exists
+    await this.getNotificationById(notificationId);
+
+    // Check if user exists
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // Check if read receipt already exists
+    const existingReceipt = await this.readReceiptRepository.findOne({
+      where: { notificationId, userId },
+    });
+
+    if (existingReceipt) {
+      // Update the timestamp if it already exists
+      existingReceipt.readAt = new Date();
+      return this.readReceiptRepository.save(existingReceipt);
+    }
+
+    // Create new read receipt
+    const readReceipt = this.readReceiptRepository.create({
+      notificationId,
+      userId,
+      readAt: new Date(),
+    });
+
+    return this.readReceiptRepository.save(readReceipt);
+  }
+
+  async findOneReadReceipt(id: string): Promise<NotificationReadReceipt> {
+    const readReceipt = await this.readReceiptRepository.findOne({
+      where: { id },
+    });
+
+    if (!readReceipt) {
+      throw new NotFoundException(
+        `Notification read receipt with ID ${id} not found`,
+      );
+    }
+
+    return readReceipt;
+  }
+
+  async getReadReceiptsByNotification(
+    notificationId: string,
+  ): Promise<NotificationReadReceipt[]> {
+    await this.getNotificationById(notificationId);
+
+    return this.readReceiptRepository.find({
+      where: { notificationId },
+    });
   }
 }

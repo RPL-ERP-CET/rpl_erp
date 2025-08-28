@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { NotificationVisibilityUser } from "./notification-visibility-user.entity";
+import { NotificationReadReceipt } from "./notification-read-receipt.entity";
 
 @Entity("notifications")
 export class Notification {
@@ -42,4 +43,10 @@ export class Notification {
     (visibilityUser) => visibilityUser.notification,
   )
   visibleToUsers!: NotificationVisibilityUser[];
+
+  @OneToMany(
+    () => NotificationReadReceipt,
+    (readReceipt) => readReceipt.notification,
+  )
+  readReceipts!: NotificationReadReceipt[];
 }
