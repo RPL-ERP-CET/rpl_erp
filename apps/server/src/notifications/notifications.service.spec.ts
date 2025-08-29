@@ -8,6 +8,7 @@ import { NotificationVisibilityUser } from "./notification-visibility-user.entit
 import { User } from "../users/users.entity";
 import { CreateNotificationVisibilityUserDto } from "./dto/create-notification-visibility-user.dto";
 import { NotFoundException } from "@nestjs/common";
+import { NotificationReadReceipt } from "./notification-read-receipt.entity";
 
 describe("NotificationsService", () => {
   let service: NotificationsService;
@@ -64,6 +65,22 @@ describe("NotificationsService", () => {
     },
   ];
 
+  // Mock data for notification read receipts
+  const mockReadReceipts: Partial<NotificationReadReceipt>[] = [
+    {
+      id: "receipt-1",
+      notificationId: "1",
+      userId: "user-1",
+      readAt: new Date(),
+    },
+    {
+      id: "receipt-2",
+      notificationId: "1",
+      userId: "user-2",
+      readAt: new Date(),
+    },
+  ];
+
   // Define mock functions for notification repository
   const createNotificationFn = vi
     .fn()
@@ -73,9 +90,15 @@ describe("NotificationsService", () => {
 
   const findNotificationsFn = vi.fn().mockResolvedValue(mockNotifications);
 
+  type NotificationWhereClause = {
+    id?: string;
+    category?: string;
+    sender?: string;
+  };
+
   const findOneNotificationFn = vi
     .fn()
-    .mockImplementation((options: { where: Record<string, string> }) => {
+    .mockImplementation((options: { where: NotificationWhereClause }) => {
       if (options?.where && options.where.id === "1") {
         return Promise.resolve(mockNotifications[0]);
       } else {
@@ -123,9 +146,14 @@ describe("NotificationsService", () => {
     );
 
   // Define mock functions for user repository
+  type UserWhereClause = {
+    id?: string;
+    email?: string;
+  };
+
   const findOneUserFn = vi
     .fn()
-    .mockImplementation((options: { where: Record<string, string> }) => {
+    .mockImplementation((options: { where: UserWhereClause }) => {
       if (options?.where && "id" in options.where) {
         const id = options.where.id;
         const user = mockUsers.find((u) => u.id === id);
@@ -133,6 +161,83 @@ describe("NotificationsService", () => {
       }
       return Promise.resolve(null);
     });
+
+  // Define mock functions for read receipt repository
+  type CreateReadReceiptDto = {
+    notificationId: string;
+    userId: string;
+    readAt: Date;
+  };
+
+  const createReadReceiptFn = vi
+    .fn()
+    .mockImplementation(
+      (data: CreateReadReceiptDto): Partial<NotificationReadReceipt> => {
+        return {
+          id: "new-receipt-id",
+          notificationId: data.notificationId,
+          userId: data.userId,
+          readAt: data.readAt,
+        };
+      },
+    );
+
+  type ReadReceiptWhereClause = {
+    id?: string;
+    notificationId?: string;
+    userId?: string;
+  };
+
+  const findOneReadReceiptFn = vi
+    .fn()
+    .mockImplementation((options: { where: ReadReceiptWhereClause }) => {
+      if (options?.where) {
+        if (options.where.id === "receipt-1") {
+          return Promise.resolve(mockReadReceipts[0]);
+        } else if (options.where.id === "non-existent-id") {
+          return Promise.resolve(null);
+        } else if (options.where.notificationId && options.where.userId) {
+          // Find by both notificationId and userId
+          const receipt = mockReadReceipts.find(
+            (r) =>
+              r.notificationId === options.where.notificationId &&
+              r.userId === options.where.userId,
+          );
+          return Promise.resolve(receipt || null);
+        }
+      }
+      return Promise.resolve(null);
+    });
+
+  const findReadReceiptsFn = vi
+    .fn()
+    .mockImplementation((options: { where: ReadReceiptWhereClause }) => {
+      if (options?.where && options.where.notificationId === "1") {
+        return Promise.resolve(mockReadReceipts);
+      }
+      return Promise.resolve([]);
+    });
+
+  const saveReadReceiptFn = vi
+    .fn()
+    .mockImplementation(
+      (
+        receipt: Partial<NotificationReadReceipt>,
+      ): Promise<NotificationReadReceipt> => {
+        if (receipt.id) {
+          // Update existing receipt
+          return Promise.resolve({
+            ...receipt,
+            readAt: receipt.readAt || new Date(),
+          } as NotificationReadReceipt);
+        }
+        // Create new receipt
+        return Promise.resolve({
+          id: "new-receipt-id",
+          ...receipt,
+        } as NotificationReadReceipt);
+      },
+    );
 
   // Create the mock repositories
   const mockNotificationRepository = {
@@ -152,6 +257,13 @@ describe("NotificationsService", () => {
     findOne: findOneUserFn,
   };
 
+  const mockReadReceiptRepository = {
+    create: createReadReceiptFn,
+    findOne: findOneReadReceiptFn,
+    find: findReadReceiptsFn,
+    save: saveReadReceiptFn,
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -167,6 +279,10 @@ describe("NotificationsService", () => {
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,
+        },
+        {
+          provide: getRepositoryToken(NotificationReadReceipt),
+          useValue: mockReadReceiptRepository,
         },
       ],
     }).compile();
@@ -325,6 +441,225 @@ describe("NotificationsService", () => {
       );
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { id: "non-existent-user-id" },
+      });
+    });
+  });
+
+  describe("createReadReceipt", () => {
+    it("should create a new read receipt if one doesn't exist", async () => {
+      mockNotificationRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockNotifications[0]));
+
+      mockUserRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockUsers[0]));
+
+      mockReadReceiptRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(null));
+
+      mockReadReceiptRepository.create = vi
+        .fn()
+        .mockImplementation((data: CreateReadReceiptDto) => ({
+          id: "new-receipt-id",
+          ...data,
+        }));
+
+      mockReadReceiptRepository.save = vi.fn().mockImplementation((data) =>
+        Promise.resolve({
+          id: "new-receipt-id",
+          ...data,
+        }),
+      );
+
+      const result = await service.createReadReceipt("1", "user-1");
+
+      expect(result).toMatchObject({
+        id: "new-receipt-id",
+        notificationId: "1",
+        userId: "user-1",
+      });
+
+      // Check that readAt is a Date instance
+      expect(result.readAt).toBeInstanceOf(Date);
+
+      const createCallArg = mockReadReceiptRepository.create.mock
+        .calls[0][0] as unknown as CreateReadReceiptDto;
+      expect(createCallArg.notificationId).toBe("1");
+      expect(createCallArg.userId).toBe("user-1");
+      expect(createCallArg.readAt).toBeInstanceOf(Date);
+
+      expect(mockReadReceiptRepository.save).toHaveBeenCalled();
+    });
+
+    it("should update an existing read receipt if one exists", async () => {
+      const existingDate = new Date(2023, 0, 1);
+      const existingReceipt = {
+        id: "existing-receipt-id",
+        notificationId: "1",
+        userId: "user-1",
+        readAt: existingDate,
+      };
+
+      mockNotificationRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockNotifications[0]));
+
+      mockUserRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockUsers[0]));
+
+      mockReadReceiptRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(existingReceipt));
+
+      mockReadReceiptRepository.save = vi.fn().mockImplementation((data) =>
+        Promise.resolve({
+          ...data,
+          readAt: new Date(),
+        }),
+      );
+
+      mockReadReceiptRepository.create = vi.fn();
+
+      const result = await service.createReadReceipt("1", "user-1");
+
+      expect(result).toMatchObject({
+        id: "existing-receipt-id",
+        notificationId: "1",
+        userId: "user-1",
+      });
+
+      // Check that readAt is a Date instance
+      expect(result.readAt).toBeInstanceOf(Date);
+
+      expect(mockReadReceiptRepository.create).not.toHaveBeenCalled();
+
+      const saveCallArg = mockReadReceiptRepository.save.mock
+        .calls[0][0] as unknown as NotificationReadReceipt;
+      expect(saveCallArg.id).toBe(existingReceipt.id);
+      expect(saveCallArg.notificationId).toBe(existingReceipt.notificationId);
+      expect(saveCallArg.userId).toBe(existingReceipt.userId);
+      expect(saveCallArg.readAt).toBeInstanceOf(Date);
+
+      expect(result.readAt.getTime()).toBeGreaterThan(existingDate.getTime());
+    });
+
+    it("should throw NotFoundException if notification doesn't exist", async () => {
+      mockNotificationRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(null));
+
+      await expect(
+        service.createReadReceipt("non-existent-id", "user-1"),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(mockNotificationRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "non-existent-id" },
+      });
+    });
+
+    it("should throw NotFoundException if user doesn't exist", async () => {
+      mockNotificationRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockNotifications[0]));
+
+      mockUserRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(null));
+
+      await expect(
+        service.createReadReceipt("1", "non-existent-user"),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "non-existent-user" },
+      });
+    });
+  });
+
+  describe("findOneReadReceipt", () => {
+    it("should return a read receipt if it exists", async () => {
+      mockReadReceiptRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockReadReceipts[0]));
+
+      const result = await service.findOneReadReceipt("receipt-1");
+
+      expect(result).toEqual(mockReadReceipts[0]);
+      expect(mockReadReceiptRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "receipt-1" },
+      });
+    });
+
+    it("should throw NotFoundException if read receipt doesn't exist", async () => {
+      mockReadReceiptRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(null));
+
+      await expect(
+        service.findOneReadReceipt("non-existent-id"),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(mockReadReceiptRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "non-existent-id" },
+      });
+    });
+  });
+
+  describe("getReadReceiptsByNotification", () => {
+    it("should return read receipts for a notification", async () => {
+      mockNotificationRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockNotifications[0]));
+
+      mockReadReceiptRepository.find = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockReadReceipts));
+
+      const result = await service.getReadReceiptsByNotification("1");
+
+      expect(result).toEqual(mockReadReceipts);
+      expect(mockNotificationRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "1" },
+      });
+      expect(mockReadReceiptRepository.find).toHaveBeenCalledWith({
+        where: { notificationId: "1" },
+      });
+    });
+
+    it("should throw NotFoundException if notification doesn't exist", async () => {
+      mockNotificationRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(null));
+
+      await expect(
+        service.getReadReceiptsByNotification("non-existent-id"),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(mockNotificationRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "non-existent-id" },
+      });
+    });
+
+    it("should return empty array if no read receipts exist for notification", async () => {
+      mockNotificationRepository.findOne = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockNotifications[0]));
+
+      mockReadReceiptRepository.find = vi
+        .fn()
+        .mockImplementation(() => Promise.resolve([]));
+
+      const result = await service.getReadReceiptsByNotification("1");
+
+      expect(result).toEqual([]);
+      expect(mockNotificationRepository.findOne).toHaveBeenCalledWith({
+        where: { id: "1" },
+      });
+      expect(mockReadReceiptRepository.find).toHaveBeenCalledWith({
+        where: { notificationId: "1" },
       });
     });
   });
