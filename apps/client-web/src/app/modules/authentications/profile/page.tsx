@@ -1,12 +1,8 @@
 import { Button } from "@client-web/components/ui/button";
+import {UserProfile} from "../mocks/profileData";
 
 export default function ProfilePage() {
-    const userProfile = {
-        firstName: "John",
-        lastName: "Doe",
-        email: "abc@gmail.com",
-        phone: "86X48XY00X",
-    }
+    const userProfile=UserProfile[0];
     return (
             <div className="flex-1 pt-[10px] flex flex-col items-center ">
                 {/* title */}

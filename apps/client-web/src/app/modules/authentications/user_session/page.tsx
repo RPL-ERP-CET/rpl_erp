@@ -1,13 +1,8 @@
 import { Button } from "@client-web/components/ui/button";
+import { UserSession } from "../mocks/userSessionData";
 
 export default function UserSessionPage() {
-    const userSession = {
-        username: "John Doe",
-        sessionId: "session123",
-        status: "Active",
-        sessionTimeout: "1 year",
-        timeRemaining: "11:20",
-    };
+    const userSession = UserSession[0]
     return (
         <div className="flex-1 flex flex-col items-center  ">
             {/* title */}
