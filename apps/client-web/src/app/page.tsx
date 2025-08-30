@@ -1,11 +1,21 @@
-import ModulePage from "./modules/page";
+import {
+    Nav,
+    Hero,
+    Footer,
+    AboutUs,
+    ExecutiveTeam,
+    ContactUs,
+} from "@client-web/features/landing/components";
 
-export default function Home() {
+export default function Landing() {
     return (
-        <div>
-            <h1>Home</h1>
-            <ModulePage />
-            {/*for demo purpose */}
-        </div>
+        <>
+            <Nav />
+            <Hero />
+            <AboutUs />
+            <ExecutiveTeam />
+            <ContactUs />
+            <Footer />
+        </>
     );
 }

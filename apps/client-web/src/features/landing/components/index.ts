@@ -1,0 +1,9 @@
+export { default as Nav } from "@client-web/features/landing/components/nav";
+export { default as BannerCarousel } from "@client-web/features/landing/components/banner-carousel";
+export { default as SearchBar } from "@client-web/features/landing/components/search-bar";
+export { default as ProductsTable } from "@client-web/features/landing/components/products-table";
+export { default as Hero } from "@client-web/features/landing/components/hero";
+export { default as AboutUs } from "@client-web/features/landing/components/about-us";
+export { default as ExecutiveTeam } from "@client-web/features/landing/components/executive-team";
+export { default as ContactUs } from "@client-web/features/landing/components/contact-us";
+export { default as Footer } from "@client-web/features/landing/components/footer";
