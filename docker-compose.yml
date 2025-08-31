@@ -16,13 +16,11 @@ services:
       - ./:/app
       - /app/node_modules
       - /app/apps/client-web/node_modules
-
     networks:
       - dev-network
     depends_on:
       - dev-server
     user: "${UID:-1000}:${GID:-1000}"
-
   dev-server:
     profiles:
       - dev
@@ -43,6 +41,7 @@ services:
       - dev-network
     depends_on:
       - dev-db
+    user: "${UID:-1000}:${GID:-1000}"
   dev-db:
     profiles:
       - dev
