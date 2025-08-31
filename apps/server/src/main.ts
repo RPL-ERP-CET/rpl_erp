@@ -2,6 +2,8 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 
+const PORT = process.env.PORT ?? 4000;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -14,8 +16,8 @@ async function bootstrap() {
   const documentFactory = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api/v1/docs", app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 4000);
+  await app.listen(PORT);
 }
 bootstrap()
-  .then(() => console.log(`Server is running on ${process.env.PORT}`))
+  .then(() => console.log(`Server is running on ${PORT}`))
   .catch(console.error);
