@@ -1,17 +1,24 @@
-// @ts-check
 import tseslint from "typescript-eslint";
-// import eslintNestJs from "@darraghor/eslint-plugin-nestjs-typed";
+import globals from "globals";
+import jestPlugin from "eslint-plugin-jest";
 
 export default tseslint.config(
-    {
-        files: ["**/*.ts", "**/*.cts", "**/*.mts"],
-        languageOptions: {
-            parser: tseslint.parser,
-            parserOptions: {
-                project: "./tsconfig.json",
-                tsconfigRootDir: import.meta.dirname,
-            },
-        },
+  {
+    files: ["**/*.ts", "**/*.cts", "**/*.mts"],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: "./tsconfig.json",
+        tsconfigRootDir: import.meta.dirname,
+      },
+      globals: { ...globals.node },
     },
-    // eslintNestJs.configs.flatRecommended, // This is the recommended ruleset for this plugin
+  },
+  {
+    files: ["**/*.spec.ts", "**/*.test.ts"],
+    ...jestPlugin.configs["flat/recommended"],
+    rules: {
+      ...jestPlugin.configs["flat/recommended"].rules,
+    },
+  },
 );

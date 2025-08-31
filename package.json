@@ -1,60 +1,63 @@
 {
-    "name": "rpl-erp",
-    "version": "0.1.0",
-    "description": "",
-    "type": "module",
-    "scripts": {
-        "dev": "pnpm run --parallel start:dev",
-        "dev:web": "pnpm --filter @rpl-erp/client-web start:dev",
-        "dev:server": "pnpm --filter @rpl-erp/server start:dev",
-        "build:web": "pnpm --filter @rpl-erp/client-web build",
-        "build:server": "pnpm --filter @rpl-erp/server build",
-        "start:web": "pnpm --filter @rpl-erp/client-web start",
-        "test:server": "pnpm --filter @rpl-erp/server test",
-        "docker:dev": "docker compose --profile dev up",
-        "docker:dev-web": "docker compose --profile dev up --no-deps dev-client-web",
-        "docker:dev-server": "docker compose --profile dev up dev-server dev-db",
-        "docker:prod": "docker compose --profile prod up --build",
-        "docker:clean": "docker image prune -f",
-        "lint": "eslint --cache --fix .",
-        "lint:server": "pnpm --filter @rpl-erp/server lint",
-        "format": "prettier --write --ignore-unknown .",
-        "prepare": "husky install"
-    },
-    "lint-staged": {
-        "*.{js,jsx,ts,tsx}": [
-            "eslint --cache --fix",
-            "prettier --write --ignore-unknown"
-        ]
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748",
-    "devDependencies": {
-        "@eslint/eslintrc": "^3.3.1",
-        "@eslint/js": "^9.31.0",
-        "@types/bcryptjs": "^3.0.0",
-        "@types/node": "^24.0.14",
-        "@types/uuid": "^10.0.0",
-        "eslint": "^9.31.0",
-        "eslint-config-prettier": "^10.1.5",
-        "eslint-plugin-prettier": "^5.5.1",
-        "globals": "^16.3.0",
-        "husky": "^8.0.0",
-        "lint-staged": "^16.1.2",
-        "prettier": "^3.6.2",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.37.0",
-        "vitest": "^3.2.4"
-    },
-    "dependencies": {
-        "@nestjs/config": "^4.0.2",
-        "@nestjs/jwt": "^11.0.0",
-        "@nestjs/typeorm": "^11.0.0",
-        "bcryptjs": "^3.0.2",
-        "typeorm": "^0.3.25",
-        "uuid": "^11.1.0",
-        "zod": "^4.0.5"
-    }
+  "name": "rpl-erp",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm run --parallel start:dev",
+    "dev:web": "pnpm --filter @rpl-erp/client-web start:dev",
+    "dev:server": "pnpm --filter @rpl-erp/server start:dev",
+    "build:web": "pnpm --filter @rpl-erp/client-web build",
+    "build:server": "pnpm --filter @rpl-erp/server build",
+    "start:web": "pnpm --filter @rpl-erp/client-web start",
+    "test:server": "pnpm --filter @rpl-erp/server test",
+    "docker:dev": "docker compose --profile dev up",
+    "docker:dev-web": "docker compose --profile dev up --no-deps dev-client-web",
+    "docker:dev-server": "docker compose --profile dev up dev-server dev-db",
+    "docker:prod": "docker compose --profile prod up --build",
+    "docker:clean": "docker image prune -f",
+    "lint": "eslint --cache --fix .",
+    "lint:server": "pnpm --filter @rpl-erp/server lint",
+    "format": "prettier --write --ignore-unknown .",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier --write --ignore-unknown"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748",
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.31.0",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.14",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.1",
+    "globals": "^16.3.0",
+    "husky": "^8.0.0",
+    "jest": "^30.1.1",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.37.0",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "bcryptjs": "^3.0.2",
+    "typeorm": "^0.3.25",
+    "uuid": "^11.1.0",
+    "zod": "^4.0.5"
+  }
 }
