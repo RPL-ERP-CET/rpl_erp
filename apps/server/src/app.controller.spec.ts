@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { describe, it, expect, beforeEach } from "@jest/globals";
 
 describe("AppController", () => {
   let appController: AppController;
@@ -12,7 +12,6 @@ describe("AppController", () => {
   });
 
   it('should return "Hello World!"', () => {
-    console.log(appController.getHello());
     expect(appController.getHello()).toBe("Hello World!");
   });
 });
