@@ -1,5 +1,7 @@
+"use client";
+
 import { Button } from "@client-web/components/ui/button";
-import { UserSession } from "../mocks/userSessionData";
+import { UserSession } from "@client-web/app/mocks/userSessionData";
 
 export default function UserSessionPage() {
     const userSession = UserSession[0]

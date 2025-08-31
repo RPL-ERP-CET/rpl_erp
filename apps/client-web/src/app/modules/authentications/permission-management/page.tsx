@@ -1,21 +1,32 @@
+"use client";
+
 import { Button } from "@client-web/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@client-web/components/ui/table";
-import { PermissionManageData } from "../mocks/permissionManageData";
+import { usePermissionStore } from "@client-web/app/stores/permissionStore";
+import { useState } from "react";
 
 export default function PermissionManagementPage() {
-    const permissionData = PermissionManageData[0];
+    const { permissionData, addPermission, deletePermission } = usePermissionStore();
+
+    const [newPermission, setNewPermission] = useState("");
+
+    const handlePermissionAdd = () => {
+        if (!newPermission.trim()) return; 
+        addPermission(newPermission);      
+        setNewPermission("");              
+    };
     return (
-        <div className="flex flex-col overflow-auto ">
+        <div className="flex flex-col overflow-auto py-3">
             {/* title */}
-            <h2 className="text-[36px] text-center font-bold mb-4">
+            <h2 className="text-[36px] text-center font-bold mb-3">
                 Permission Management
             </h2>
             {/* adding new permissions */}
             <div className="flex flex-col gap-3 px-3 mt-6">
                 <span className="font-semibold text-[20px]">Define new Permission</span>
                 <div className="flex gap-4  items-center">
-                    <input type="text" placeholder="Enter permission name" className="border border-black p-2 rounded w-[300px]" />
-                    <Button className="bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-600 transition">
+                    <input value={newPermission} onChange={(e)=>setNewPermission(e.target.value)} type="text" placeholder="Enter permission name" className="border border-black p-2 rounded w-[300px]" />
+                    <Button onClick={handlePermissionAdd} className="bg-blue-500 text-white px-5 py-2 rounded hover:bg-blue-600 transition">
                         Add Permission
                     </Button>
                 </div>
@@ -44,7 +55,7 @@ export default function PermissionManagementPage() {
                                         <Button className="bg-blue-400 text-white px-4 rounded hover:bg-blue-600 transition">
                                             Edit
                                         </Button>
-                                        <Button className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition">
+                                        <Button onClick={()=>deletePermission(index)} className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 transition">
                                             Delete
                                         </Button>
                                     </TableCell>
