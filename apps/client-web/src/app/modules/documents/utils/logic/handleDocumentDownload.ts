@@ -1,8 +1,8 @@
-import { Document } from "./dummyDocuments";
+import { DocumentInterface } from "../dummyDocuments";
 
-export const handleDownload = (
+export const handleDocumentDownload = (
     id: number,
-    data: Document[],
+    data: DocumentInterface[],
     setLoadingIds: React.Dispatch<React.SetStateAction<Set<number>>>,
 ) => {
     const doc = data.find((d) => d.id === id);

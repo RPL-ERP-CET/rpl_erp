@@ -7,26 +7,27 @@ import { DataTable } from "@client-web/components/custom/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Download, EllipsisVertical, Loader, Trash2 } from "lucide-react";
 
-import { Document } from "../utils/dummyDocuments";
-import { handleDownload } from "../utils/download";
+import { DocumentInterface } from "../utils/dummyDocuments";
+import { handleDocumentDownload } from "../utils/logic/handleDocumentDownload";
+import { handleDocumentDeletion } from "../utils/logic/handleDocumentDeletion";
 
 // Documents passing as props
 interface DocumentsTableProps {
-    data: Document[];
+    data: DocumentInterface[];
 }
 
 export const DocumentsTable: React.FC<DocumentsTableProps> = ({ data }) => {
     const [loadingIds, setLoadingIds] = useState<Set<number>>(new Set());
 
     // Dummy Column Definitions
-    const columns = useMemo<ColumnDef<Document>[]>(
+    const columns = useMemo<ColumnDef<DocumentInterface>[]>(
         () => [
             { accessorKey: "name", header: "Name" },
             { accessorKey: "type", header: "Type" },
             { accessorKey: "version", header: "Version" },
-            { accessorKey: "uploadedBy", header: "Uploaded By" },
             { accessorKey: "uploadedDate", header: "Date" },
             { accessorKey: "uploadedTime", header: "Time" },
+            { accessorKey: "permissions", header: "Permissions" },
             {
                 accessorKey: "actions",
                 header: "Actions",
@@ -37,7 +38,7 @@ export const DocumentsTable: React.FC<DocumentsTableProps> = ({ data }) => {
                             className="px-2 py-1 rounded hover:scale-120 hover:text-green-600 transition-all duration-300"
                             disabled={loadingIds.has(row.original.id)}
                             onClick={() => {
-                                handleDownload(
+                                handleDocumentDownload(
                                     row.original.id,
                                     data,
                                     setLoadingIds,
@@ -54,9 +55,7 @@ export const DocumentsTable: React.FC<DocumentsTableProps> = ({ data }) => {
                         {/** Delete Button */}
                         <button
                             className="px-2 py-1 rounded hover:scale-120 hover:text-red-500 transition-all duration-300"
-                            onClick={() =>
-                                alert(`Deleting ${row.original.name}`)
-                            }
+                            onClick={handleDocumentDeletion}
                         >
                             <Trash2 size={20} />
                         </button>
@@ -77,5 +76,6 @@ export const DocumentsTable: React.FC<DocumentsTableProps> = ({ data }) => {
         [data, loadingIds],
     );
 
+    // Documents Table
     return <DataTable columns={columns} data={data} />;
 };

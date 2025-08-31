@@ -1,12 +1,12 @@
 // Document type
-export type Document = {
+export type DocumentInterface = {
     id: number;
     name: string;
     type: string;
     version: number;
-    uploadedBy: string;
     uploadedDate: string;
     uploadedTime: string;
+    permissions: string;
 };
 
 const fileTypes = ["PDF", "DOCX", "XLSX", "PPTX", "TXT"];
@@ -54,7 +54,7 @@ function formatTime(date: Date): string {
     return `${hh}:${min}`;
 }
 
-export function generateDummyDocuments(count: number): Document[] {
+export function generateDummyDocuments(count: number): DocumentInterface[] {
     return Array.from({ length: count }, (_, i) => {
         const type = fileTypes[i % fileTypes.length];
         const extension = type.toLowerCase();
@@ -73,9 +73,12 @@ export function generateDummyDocuments(count: number): Document[] {
             name: `${words[i % words.length]}-${i + 1}.${extension}`,
             type,
             version: seededInt(i + 1, 1, 5),
-            uploadedBy: firstNames[i % firstNames.length],
             uploadedDate: formatDate(created),
             uploadedTime: formatTime(created),
+            permissions:
+                firstNames[i % firstNames.length] +
+                ", " +
+                firstNames[(i + 1) % firstNames.length],
         };
     });
 }
