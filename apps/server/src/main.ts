@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import cookieParser from "cookie-parser";
 // import { RolesGuard } from "./common/guards/roles/roles.guard";
 import { ValidationPipe } from "@nestjs/common";
 
@@ -20,6 +21,7 @@ async function bootstrap() {
   const documentFactory = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api/v1/docs", app, documentFactory);
 
+  app.use(cookieParser());
   await app.listen(PORT);
 }
 
