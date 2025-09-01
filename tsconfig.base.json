@@ -22,6 +22,10 @@
         "forceConsistentCasingInFileNames": true,
         "incremental": true,
         "composite": true,
+        "types": [
+            "node",
+            "jest"
+        ],
         "customConditions": [
             "development"
         ],

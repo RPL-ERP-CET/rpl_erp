@@ -11,12 +11,19 @@ export default tseslint.config(
         project: "./tsconfig.json",
         tsconfigRootDir: import.meta.dirname,
       },
-      globals: { ...globals.node },
+      globals: { ...globals.node, ...globals.jest },
     },
   },
   {
     files: ["**/*.spec.ts", "**/*.test.ts"],
     ...jestPlugin.configs["flat/recommended"],
+    languageOptions: {
+      globals: { ...globals.jest },
+      parserOptions: {
+        project: "./tsconfig.spec.json",
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     rules: {
       ...jestPlugin.configs["flat/recommended"].rules,
     },
