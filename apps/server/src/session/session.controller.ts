@@ -38,7 +38,7 @@ export class SessionController {
 
   @HttpCode(HttpStatus.OK)
   @Post("signin")
-  async signin(
+  async signIn(
     @Body() signUpAuthDto: SignUpAuthDto,
     @Res({ passthrough: true }) response: Response,
   ) {
