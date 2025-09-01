@@ -5,7 +5,6 @@ import { UsersService } from "./users.service";
 import { User } from "./users.entity";
 import bcrypt from "bcryptjs";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { describe, expect, it, jest, beforeEach } from "@jest/globals";
 
 describe("UsersService", () => {
   let service: UsersService;
@@ -33,18 +32,18 @@ describe("UsersService", () => {
   };
 
   const mockQueryBuilder = {
-    where: jest.fn().mockReturnThis(),
-    addSelect: jest.fn().mockReturnThis(),
-    getOne: jest.fn(),
+    where: vi.fn().mockReturnThis(),
+    addSelect: vi.fn().mockReturnThis(),
+    getOne: vi.fn(),
   };
 
   const mockUserRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-    createQueryBuilder: jest.fn(() => mockQueryBuilder),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    remove: vi.fn(),
+    createQueryBuilder: vi.fn(() => mockQueryBuilder),
   };
 
   beforeEach(async () => {
@@ -61,7 +60,7 @@ describe("UsersService", () => {
     service = module.get<UsersService>(UsersService);
 
     // Reset all mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should be defined", () => {

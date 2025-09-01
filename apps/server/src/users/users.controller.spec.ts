@@ -2,20 +2,19 @@ import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { Test, TestingModule } from "@nestjs/testing";
-import { describe, expect, it, jest, beforeEach } from "@jest/globals";
 
 describe("UsersController", () => {
   let controller: UsersController;
   let service: UsersService;
 
   const mockService = {
-    getUsers: jest.fn(),
-    getUser: jest.fn(),
-    createUser: jest.fn(),
-    updateUser: jest.fn(),
-    deleteUser: jest.fn(),
-    comparePassword: jest.fn(),
-    getUserByEmail: jest.fn(),
+    getUsers: vi.fn(),
+    getUser: vi.fn(),
+    createUser: vi.fn(),
+    updateUser: vi.fn(),
+    deleteUser: vi.fn(),
+    comparePassword: vi.fn(),
+    getUserByEmail: vi.fn(),
   };
 
   beforeEach(async () => {
