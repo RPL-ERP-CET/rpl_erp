@@ -52,12 +52,6 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@nestjs/config": "^4.0.2",
-    "@nestjs/jwt": "^11.0.0",
-    "@nestjs/typeorm": "^11.0.0",
-    "bcryptjs": "^3.0.2",
-    "typeorm": "^0.3.25",
-    "uuid": "^11.1.0",
     "zod": "^4.0.5"
   }
 }

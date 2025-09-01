@@ -24,7 +24,7 @@
         "composite": true,
         "types": [
             "node",
-            "jest"
+            "vitest/globals"
         ],
         "customConditions": [
             "development"

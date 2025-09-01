@@ -1,6 +1,6 @@
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { describe, it, expect, beforeEach } from "@jest/globals";
+// import { describe, beforeEach, it, expect } from "vitest";
 
 describe("AppController", () => {
   let appController: AppController;
