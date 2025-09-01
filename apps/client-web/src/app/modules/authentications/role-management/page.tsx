@@ -4,14 +4,22 @@ import { Search, Edit, Trash2, Plus, X, Check } from "lucide-react";
 import {
     mockRoles,
     mockPermissions,
-    Role,
-    Permission,
-} from "../../../../features/role-management/mocks/roleManagementMockData"; // Import mock data and types
+} from "@client-web/features/authorization/mocks/roleManagementMockData"; // Import mock data and types
+
+interface Permission {
+    id: string;
+    name: string;
+}
+
+interface Role {
+    id: number;
+    name: string;
+    permissions: string[];
+}
 
 // Type definitions
 interface CreateRoleData {
     name: string;
-    description: string;
     permissions: string[];
 }
 
@@ -27,7 +35,6 @@ const RoleManagement: React.FC = () => {
     const [editingRole, setEditingRole] = useState<Role | null>(null);
     const [newRole, setNewRole] = useState<CreateRoleData>({
         name: "",
-        description: "",
         permissions: [],
     });
 
@@ -153,7 +160,7 @@ const RoleManagement: React.FC = () => {
                 api.createRole(newRole);
             }
 
-            setNewRole({ name: "", description: "", permissions: [] });
+            setNewRole({ name: "", permissions: [] });
             setShowCreateForm(false);
         } catch (err) {
             console.error("Form submission failed:", err);
@@ -174,7 +181,6 @@ const RoleManagement: React.FC = () => {
     const startEdit = (role: Role): void => {
         setNewRole({
             name: role.name,
-            description: role.description || "",
             permissions: role.permissions || [],
         });
         setEditingRole(role);
@@ -183,7 +189,7 @@ const RoleManagement: React.FC = () => {
 
     // Cancel edit/create
     const cancelForm = (): void => {
-        setNewRole({ name: "", description: "", permissions: [] });
+        setNewRole({ name: "", permissions: [] });
         setEditingRole(null);
         setShowCreateForm(false);
         setError("");
@@ -241,12 +247,6 @@ const RoleManagement: React.FC = () => {
         e: React.ChangeEvent<HTMLInputElement>,
     ): void => {
         setNewRole((prev) => ({ ...prev, name: e.target.value }));
-    };
-
-    const handleRoleDescriptionChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
-    ): void => {
-        setNewRole((prev) => ({ ...prev, description: e.target.value }));
     };
 
     const handlePreviousPage = (): void => {
@@ -307,35 +307,18 @@ const RoleManagement: React.FC = () => {
                             </div>
 
                             <div className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Role Name *
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={newRole.name}
-                                            onChange={handleRoleNameChange}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter role name"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Description
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={newRole.description}
-                                            onChange={
-                                                handleRoleDescriptionChange
-                                            }
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter role description"
-                                        />
-                                    </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Role Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={newRole.name}
+                                        onChange={handleRoleNameChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Enter role name"
+                                        required
+                                    />
                                 </div>
 
                                 <div>
@@ -452,9 +435,6 @@ const RoleManagement: React.FC = () => {
                                             Role
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Description
-                                        </th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Permissions
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -471,12 +451,6 @@ const RoleManagement: React.FC = () => {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm font-medium text-gray-900">
                                                     {role.name}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-600">
-                                                    {role.description ||
-                                                        "No description"}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
