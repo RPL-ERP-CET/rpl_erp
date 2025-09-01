@@ -1,6 +1,13 @@
-import { Column, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { User } from "../../users/users.entity";
 
+@Entity("sessions")
 export class Session {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
