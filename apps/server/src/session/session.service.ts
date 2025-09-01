@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { MoreThan, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { createHash } from "crypto";
 
@@ -46,9 +46,10 @@ export class SessionService {
     const session = await this.sessionRepo.findOneBy({
       user: { id: user.id },
       refresh_token: this.hashToken(token),
-      expires: MoreThan(new Date()),
     });
-    if (!session) {
+    if (!session) throw new UnauthorizedException("Invalid refresh token");
+    if (session.expires < new Date()) {
+      await this.sessionRepo.delete(session);
       throw new UnauthorizedException("Invalid or expired refresh token");
     }
     return { valid: true };
