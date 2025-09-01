@@ -1,7 +1,6 @@
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { Test, TestingModule } from "@nestjs/testing";
 
 describe("UsersController", () => {
   let controller: UsersController;
@@ -17,16 +16,9 @@ describe("UsersController", () => {
     getUserByEmail: vi.fn(),
   };
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersController],
-      providers: [UsersService],
-    })
-      .overrideProvider(UsersService)
-      .useValue(mockService)
-      .compile();
-    controller = module.get<UsersController>(UsersController);
-    service = module.get<UsersService>(UsersService);
+  beforeEach(() => {
+    service = mockService;
+    controller = new UsersController(service);
   });
 
   it("should be defined controller and service", () => {

@@ -59,7 +59,6 @@ describe("UsersService", () => {
 
     service = module.get<UsersService>(UsersService);
 
-    // Reset all mocks before each test
     vi.clearAllMocks();
   });
 
