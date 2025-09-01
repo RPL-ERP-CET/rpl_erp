@@ -1,101 +1,107 @@
 openapi: 3.0.3
 info:
-    title: RPL API Specification
-    description: API for RPL ERP
-    version: 1.0.0
+  title: RPL API Specification
+  description: API for RPL ERP
+  version: 1.0.0
 
 servers:
-    - url: ""
-      description: Production server
-    - url: https://localhost:8080/v1
-      description: Staging server
+  - url: ""
+    description: Production server
+  - url: https://localhost:8080/v1
+    description: Staging server
 
 security:
-    - bearerAuth: []
+  - bearerAuth: []
 
 components:
-    securitySchemes:
-        bearerAuth:
-            type: http
-            scheme: bearer
-            bearerFormat: JWT
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
-    schemas:
-        $ref: "./schemas/index.yaml"
+  schemas:
+    $ref: "./schemas/index.yaml"
 
 paths:
-    # Authentication
-    /auth/login:
-        $ref: "./paths/auth.yaml#/login"
-    /auth/refresh:
-        $ref: "./paths/auth.yaml#/refresh"
+  # Users
+  /users:
+    $ref: "./paths/users.yaml#/users"
+  /users/{id}:
+    $ref: "./paths/users.yaml#/users_by_id"
+  /users/{id}/roles:
+    $ref: "./paths/users.yaml#/user_roles"
 
-    # Users
-    /users:
-        $ref: "./paths/users.yaml#/users"
-    /users/{id}:
-        $ref: "./paths/users.yaml#/users_by_id"
-    /users/{id}/roles:
-        $ref: "./paths/users.yaml#/user_roles"
+  # Permissions
+  /permissions:
+    $ref: "./paths/permissions.yaml#/permissions"
 
-    # Permissions
-    /permissions:
-        $ref: "./paths/permissions.yaml#/permissions"
+  # Roles
+  /roles:
+    $ref: "./paths/roles.yaml#/roles"
+  /roles/{id}/permissions:
+    $ref: "./paths/roles.yaml#/role_permissions"
 
-    # Roles
-    /roles:
-        $ref: "./paths/roles.yaml#/roles"
-    /roles/{id}/permissions:
-        $ref: "./paths/roles.yaml#/role_permissions"
+  # Sessions
+  /auth/sessions:
+    $ref: "./paths/sessions.yaml#/sessions"
+  /auth/sessions/{id}:
+    $ref: "./paths/sessions.yaml#/sessions_by_id"
+  /auth/signin:
+    $ref: "./paths/sessions.yaml#/signin"
+  /auth/signup:
+    $ref: "./paths/sessions.yaml#/signup"
+  /auth/refresh/verify:
+    $ref: "./paths/sessions.yaml#/verify_refresh_token"
+  /auth/access/verify:
+    $ref: "./paths/sessions.yaml#/verify_access_token"
+  /auth/refresh:
+    $ref: "./paths/sessions.yaml#/refresh_tokens"
+  /auth/logout:
+    $ref: "./paths/sessions.yaml#/logout"
 
-    # Sessions
-    /sessions:
-        $ref: "./paths/sessions.yaml#/sessions"
-    /sessions/{id}:
-        $ref: "./paths/sessions.yaml#/sessions_by_id"
+  # Notifications
+  /notifications:
+    $ref: "./paths/notifications.yaml#/notifications"
+  /notifications/{id}/read:
+    $ref: "./paths/notifications.yaml#/mark_read"
+  /notifications/{id}/visibility/users:
+    $ref: "./paths/notifications.yaml#/visibility_users"
+  /notifications/{id}/visibility/roles:
+    $ref: "./paths/notifications.yaml#/visibility_roles"
+  /notifications/{id}/attachments:
+    $ref: "./paths/notifications.yaml#/attachments"
 
-    # Notifications
-    /notifications:
-        $ref: "./paths/notifications.yaml#/notifications"
-    /notifications/{id}/read:
-        $ref: "./paths/notifications.yaml#/mark_read"
-    /notifications/{id}/visibility/users:
-        $ref: "./paths/notifications.yaml#/visibility_users"
-    /notifications/{id}/visibility/roles:
-        $ref: "./paths/notifications.yaml#/visibility_roles"
-    /notifications/{id}/attachments:
-        $ref: "./paths/notifications.yaml#/attachments"
+  # Notification Priorities
+  /notification-priorities:
+    $ref: "./paths/notification-priorities.yaml#/priorities"
 
-    # Notification Priorities
-    /notification-priorities:
-        $ref: "./paths/notification-priorities.yaml#/priorities"
-
-    # Documents
-    /documents:
-        $ref: "./paths/documents.yaml#/documents"
-    /documents/{id}:
-        $ref: "./paths/documents.yaml#/documents_by_id"
-    /documents/{id}/visibility/users:
-        $ref: "./paths/documents.yaml#/visibility_users"
-    /documents/{id}/visibility/roles:
-        $ref: "./paths/documents.yaml#/visibility_roles"
-    /documents/{id}/templates:
-        $ref: "./paths/documents.yaml#/templates"
+  # Documents
+  /documents:
+    $ref: "./paths/documents.yaml#/documents"
+  /documents/{id}:
+    $ref: "./paths/documents.yaml#/documents_by_id"
+  /documents/{id}/visibility/users:
+    $ref: "./paths/documents.yaml#/visibility_users"
+  /documents/{id}/visibility/roles:
+    $ref: "./paths/documents.yaml#/visibility_roles"
+  /documents/{id}/templates:
+    $ref: "./paths/documents.yaml#/templates"
 
 tags:
-    - name: Authentication
-      description: Authentication and session management
-    - name: Users
-      description: User management operations
-    - name: Permissions
-      description: Permission management operations
-    - name: Roles
-      description: Role management operations
-    - name: Sessions
-      description: Session management operations
-    - name: Notifications
-      description: Notification management operations
-    - name: Notification Priorities
-      description: Notification priority management operations
-    - name: Documents
-      description: Document management operations
+  - name: Authentication
+    description: Authentication and session management
+  - name: Users
+    description: User management operations
+  - name: Permissions
+    description: Permission management operations
+  - name: Roles
+    description: Role management operations
+  - name: Sessions
+    description: Session management operations
+  - name: Notifications
+    description: Notification management operations
+  - name: Notification Priorities
+    description: Notification priority management operations
+  - name: Documents
+    description: Document management operations

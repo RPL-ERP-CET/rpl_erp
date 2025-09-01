@@ -1,41 +1,223 @@
+signup:
+  post:
+    tags: [Authentication]
+    summary: User registration
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/index.yaml#/SignUpAuthDto"
+    responses:
+      "201":
+        description: User registered successfully
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/TokenResponse"
+        headers:
+          Set-Cookie:
+            description: Refresh token set as HTTP-only secure cookie
+            schema:
+              type: string
+              example: "refresh_token=<token>; HttpOnly; Secure; SameSite=Strict"
+      "400":
+        description: Invalid input data
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
+      "409":
+        description: User already exists
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
+
+signin:
+  post:
+    tags: [Authentication]
+    summary: User login
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/index.yaml#/SignInAuthDto"
+    responses:
+      "200":
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/TokenResponse"
+        headers:
+          Set-Cookie:
+            description: Refresh token set as HTTP-only secure cookie
+            schema:
+              type: string
+              example: "refresh_token=<token>; HttpOnly; Secure; SameSite=Strict"
+      "401":
+        description: Invalid credentials
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
+
+verify_refresh_token:
+  get:
+    tags: [Authentication]
+    summary: Verify refresh token validity
+    parameters:
+      - name: refresh_token
+        in: cookie
+        required: true
+        schema:
+          type: string
+        description: HTTP-only refresh token cookie
+    responses:
+      "200":
+        description: Refresh token is valid
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/TokenVerificationResponse"
+      "401":
+        description: Invalid or expired refresh token
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
+
+verify_access_token:
+  get:
+    tags: [Authentication]
+    summary: Verify access token and get user info
+    parameters:
+      - name: access
+        in: cookie
+        required: true
+        schema:
+          type: string
+        description: Access token cookie
+    security: []
+    responses:
+      "200":
+        description: Access token is valid, returns user information
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/User"
+      "401":
+        description: Invalid or expired access token
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
+
+refresh_tokens:
+  get:
+    tags: [Authentication]
+    summary: Refresh access token using refresh token
+    parameters:
+      - name: refresh_token
+        in: cookie
+        required: true
+        schema:
+          type: string
+        description: HTTP-only refresh token cookie
+    responses:
+      "200":
+        description: Token refreshed successfully
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/TokenResponse"
+        headers:
+          Set-Cookie:
+            description: New refresh token set as HTTP-only secure cookie
+            schema:
+              type: string
+              example: "refresh_token=<new_token>; HttpOnly; Secure; SameSite=Strict"
+      "401":
+        description: Invalid or expired refresh token
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
+
+logout:
+  get:
+    tags: [Authentication]
+    summary: Logout user and revoke session
+    parameters:
+      - name: refresh_token
+        in: cookie
+        required: true
+        schema:
+          type: string
+        description: HTTP-only refresh token cookie
+    responses:
+      "200":
+        description: Logged out successfully
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/LogoutResponse"
+        headers:
+          Set-Cookie:
+            description: Refresh token cookie cleared
+            schema:
+              type: string
+              example: "refresh_token=; HttpOnly; Secure; Max-Age=0"
+      "401":
+        description: Invalid refresh token or user not found
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
+
 sessions:
-    get:
-        tags: [Sessions]
-        summary: Get all sessions for current user
-        responses:
-            "200":
-                description: List of user sessions
-                content:
-                    application/json:
-                        schema:
-                            type: array
-                            items:
-                                allOf:
-                                    - $ref: "../schemas/index.yaml#/Session"
-                                    - type: object
-                                      properties:
-                                          refresh_token:
-                                              type: string
-                                              readOnly: true
-                                              description: Hidden for security
+  get:
+    tags: [Sessions]
+    summary: Get all sessions for current user
+    responses:
+      "200":
+        description: List of user sessions
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                allOf:
+                  - $ref: "../schemas/index.yaml#/Session"
+                  - type: object
+                    properties:
+                      refresh_token:
+                        type: string
+                        readOnly: true
+                        description: Hidden for security
 
 sessions_by_id:
-    delete:
-        tags: [Sessions]
-        summary: Revoke a session
-        parameters:
-            - name: id
-              in: path
-              required: true
-              schema:
-                  type: string
-                  format: uuid
-        responses:
-            "204":
-                description: Session revoked successfully
-            "404":
-                description: Session not found
-                content:
-                    application/json:
-                        schema:
-                            $ref: "../schemas/index.yaml#/Error"
+  delete:
+    tags: [Sessions]
+    summary: Revoke a specific session
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Session ID to revoke
+    responses:
+      "204":
+        description: Session revoked successfully
+      "404":
+        description: Session not found
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/index.yaml#/Error"
