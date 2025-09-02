@@ -7,6 +7,7 @@ import {
   Get,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from "@nestjs/common";
 import type { Response } from "express";
 
@@ -15,6 +16,7 @@ import { SignUpAuthDto } from "./dto/signup-session.dto";
 import { User } from "src/users/users.entity";
 import { UserDecorator } from "src/common/decorators/user.decorator";
 import { Cookies } from "src/common/decorators/cookies.decorator";
+import { AuthGuard } from "src/common/guards/auth/auth.guard";
 
 @Controller("auth")
 export class SessionController {
@@ -53,6 +55,7 @@ export class SessionController {
     return { accessToken };
   }
 
+  @UseGuards(AuthGuard)
   @Get("refresh/verify")
   async verifyRefreshToken(
     @Cookies("refresh_token") token: string,
@@ -70,6 +73,7 @@ export class SessionController {
   }
 
   @Get("refresh")
+  @UseGuards(AuthGuard)
   async refreshTokens(
     @Cookies("refresh_token") token: string,
     @UserDecorator("") user: User,
@@ -88,6 +92,7 @@ export class SessionController {
   }
 
   @Get("logout")
+  @UseGuards(AuthGuard)
   async logout(
     @UserDecorator("") user: User,
     @Cookies("refresh_token") token: string,
