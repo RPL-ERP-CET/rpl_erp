@@ -10,7 +10,6 @@ export type T_ApiSuccessResponse<T> = {
 };
 
 export type T_ApiErrorResponse = {
-  success: false;
   type: string;
   title: string;
   status: number;
