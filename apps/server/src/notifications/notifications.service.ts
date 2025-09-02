@@ -6,6 +6,7 @@ import { Repository } from "typeorm";
 import { Notification } from "./notifications.entity";
 import { NotificationVisibilityUser } from "./notification-visibility-user.entity";
 import { NotificationReadReceipt } from "./notification-read-receipt.entity";
+import { NotificationPriority } from "./notification-priority.entity";
 import { User } from "../users/users.entity";
 
 @Injectable()
@@ -22,7 +23,11 @@ export class NotificationsService {
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
+
+    @InjectRepository(NotificationPriority)
+    private priorityRepository: Repository<NotificationPriority>,
   ) {}
+
   createNotification(dto: CreateNotificationDto) {
     const notification = this.notificationRepository.create(dto);
     return this.notificationRepository.save(notification);
@@ -135,5 +140,41 @@ export class NotificationsService {
     return this.readReceiptRepository.find({
       where: { notificationId },
     });
+  }
+
+  // ================= Notification Priority Methods ================= //
+
+  async getAllPriorities(): Promise<NotificationPriority[]> {
+    return this.priorityRepository.find();
+  }
+
+  async getPriorityById(id: string): Promise<NotificationPriority> {
+    const priority = await this.priorityRepository.findOne({ where: { id } });
+    if (!priority) {
+      throw new NotFoundException(`Priority with ID ${id} not found`);
+    }
+    return priority;
+  }
+
+  async createPriority(
+    dto: Partial<NotificationPriority>,
+  ): Promise<NotificationPriority> {
+    const priority = this.priorityRepository.create(dto);
+    return this.priorityRepository.save(priority);
+  }
+
+  async updatePriority(
+    id: string,
+    dto: Partial<NotificationPriority>,
+  ): Promise<NotificationPriority> {
+    const priority = await this.getPriorityById(id);
+    Object.assign(priority, dto);
+    return this.priorityRepository.save(priority);
+  }
+
+  async deletePriority(id: string): Promise<{ message: string }> {
+    const priority = await this.getPriorityById(id);
+    await this.priorityRepository.remove(priority);
+    return { message: "Priority deleted successfully" };
   }
 }

@@ -9,6 +9,7 @@ import { User } from "../users/users.entity";
 import { CreateNotificationVisibilityUserDto } from "./dto/create-notification-visibility-user.dto";
 import { NotFoundException } from "@nestjs/common";
 import { NotificationReadReceipt } from "./notification-read-receipt.entity";
+import { NotificationPriority } from "./notification-priority.entity";
 
 describe("NotificationsService", () => {
   let service: NotificationsService;
@@ -283,6 +284,10 @@ describe("NotificationsService", () => {
         {
           provide: getRepositoryToken(NotificationReadReceipt),
           useValue: mockReadReceiptRepository,
+        },
+        {
+          provide: getRepositoryToken(NotificationPriority),
+          useValue: {},
         },
       ],
     }).compile();
