@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { JwtModule } from "@nestjs/jwt";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -8,6 +9,8 @@ import { UsersModule } from "./users/users.module";
 import { SessionModule } from "./session/session.module";
 import { PermissionsModule } from "./permissions/permissions.module";
 import { RolesModule } from "./roles/roles.module";
+import { CommonModule } from "./common/common.module";
+import { JwtConfigFactory } from "./common/constants/jwt.costants";
 
 @Module({
   imports: [
@@ -35,10 +38,16 @@ import { RolesModule } from "./roles/roles.module";
       },
       inject: [ConfigService],
     }),
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigModule],
+      useClass: JwtConfigFactory,
+    }),
     UsersModule,
     SessionModule,
     PermissionsModule,
     RolesModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
