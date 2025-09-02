@@ -22,7 +22,13 @@ async function createCarouselItem(data: T_CarouselItem) {
     )
   ).data;
 }
-async function updateCarouselItem(id: string, data: Partial<T_CarouselItem>) {
+async function updateCarouselItem({
+  id,
+  data,
+}: {
+  id: string;
+  data: T_CarouselItem;
+}) {
   return (
     await api.put<T_ApiSuccessResponse<T_CarouselItem>>(
       `/cms/landing/hero-carousel/${id}`,
