@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { Role } from "./entities/role.entity";
 import { Permission } from "../permissions/permissions.entity";
 import { CreateRoleDto } from "./dto/create-role.dto";
+import { UpdateRoleDto } from "./dto/update-role.dto";
 
 @Injectable()
 export class RolesService {
@@ -37,5 +38,28 @@ export class RolesService {
 
   async remove(id: string): Promise<void> {
     await this.rolesRepository.delete(id);
+  }
+
+  async update(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
+    const role = await this.rolesRepository.findOne({ where: { id } });
+    if (!role) {
+      throw new NotFoundException("Role not found");
+    }
+
+    if (updateRoleDto.permissionIds) {
+      const permissions = await this.permissionsRepository.findByIds(
+        updateRoleDto.permissionIds,
+      );
+      if (permissions.length !== updateRoleDto.permissionIds.length) {
+        throw new NotFoundException("One or more permissions not found");
+      }
+      role.permissions = permissions;
+    }
+
+    if (updateRoleDto.name !== undefined) role.name = updateRoleDto.name;
+    if (updateRoleDto.priority !== undefined)
+      role.priority = updateRoleDto.priority;
+
+    return this.rolesRepository.save(role);
   }
 }
