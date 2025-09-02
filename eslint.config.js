@@ -23,6 +23,22 @@ export default defineConfig([
   },
   tseslint.configs.recommendedTypeChecked,
   {
+    rules: {
+      // Disable base rule to avoid conflicts
+      "no-unused-vars": "off",
+      // Configure TypeScript unused vars rule to ignore variables starting with _
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.spec.ts", "**/*.test.ts"],
     rules: {
       "@typescript-eslint/unbound-method": "off",
