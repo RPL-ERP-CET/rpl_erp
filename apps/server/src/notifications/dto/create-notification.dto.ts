@@ -6,6 +6,7 @@ import {
   IsInt,
   IsUUID,
 } from "class-validator";
+import { NotificationPriority } from "../notification-priority.entity";
 
 export class CreateNotificationDto {
   @IsNotEmpty()
@@ -15,7 +16,7 @@ export class CreateNotificationDto {
   @IsNotEmpty()
   @IsOptional()
   @IsUUID()
-  declare priority?: string;
+  declare priority?: NotificationPriority;
 
   @IsOptional()
   @IsInt()

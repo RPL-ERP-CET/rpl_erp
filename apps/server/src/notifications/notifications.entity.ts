@@ -20,12 +20,9 @@ export class Notification {
   @Column({ type: "varchar" })
   content!: string;
 
-  @ManyToOne(() => NotificationPriority, (priority) => priority.notifications, {
-    onDelete: "SET NULL",
-    eager: true,
-  })
-  @JoinColumn({ name: "priority" })
-  priority?: NotificationPriority | null;
+  @ManyToOne(() => NotificationPriority, { eager: true, nullable: true })
+  @JoinColumn({ name: "priorityId" })
+  priority?: NotificationPriority;
 
   @Column({ type: "integer", nullable: true })
   cooldown?: number;
