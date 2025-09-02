@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm";
 import { NotificationVisibilityUser } from "./notification-visibility-user.entity";
 import { NotificationReadReceipt } from "./notification-read-receipt.entity";
+import { NotificationPriority } from "./notification-priority.entity";
 
 @Entity("notifications")
 export class Notification {
@@ -17,8 +20,12 @@ export class Notification {
   @Column({ type: "varchar" })
   content!: string;
 
-  // @Column({ type: "uuid" })
-  // priority!: string;
+  @ManyToOne(() => NotificationPriority, (priority) => priority.notifications, {
+    onDelete: "SET NULL",
+    eager: true,
+  })
+  @JoinColumn({ name: "priority" })
+  priority!: NotificationPriority;
 
   @Column({ type: "integer", nullable: true })
   cooldown?: number;
