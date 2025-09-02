@@ -4,6 +4,7 @@ import {
   // IsUUID,
   IsOptional,
   IsInt,
+  IsUUID,
 } from "class-validator";
 
 export class CreateNotificationDto {
@@ -11,10 +12,9 @@ export class CreateNotificationDto {
   @IsString()
   declare content: string;
 
-  // // @IsNotEmpty()
-  // @IsOptional()
-  // // @IsUUID()
-  // declare priority?: string;
+  @IsOptional()
+  @IsUUID("4", { message: "priority must be a valid UUID" })
+  declare priority?: string;
 
   @IsOptional()
   @IsInt()
