@@ -1,4 +1,5 @@
 import { IsOptional, IsString, IsUUID, IsInt } from "class-validator";
+import { NotificationPriority } from "../notification-priority.entity";
 
 export class UpdateNotificationDto {
   @IsOptional()
@@ -7,7 +8,7 @@ export class UpdateNotificationDto {
 
   @IsOptional()
   @IsUUID()
-  priority?: string;
+  priority?: NotificationPriority;
 
   @IsOptional()
   @IsInt()
