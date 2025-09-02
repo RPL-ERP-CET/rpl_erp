@@ -14,6 +14,11 @@
             "node",
             "vitest/globals"
         ],
+        "typeRoots": [
+            "./node_modules/",
+            "../../node_modules/@types",
+            "./src/common/types"
+        ],
         "strictBindCallApply": false
     },
     "include": [

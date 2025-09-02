@@ -1,4 +1,3 @@
-// @ts-check
 import tseslint from "typescript-eslint";
 // import eslintNestJs from "@darraghor/eslint-plugin-nestjs-typed";
 
