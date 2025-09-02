@@ -1,4 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+  type MockedFunction,
+} from "vitest";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
 import { UnauthorizedException } from "@nestjs/common";
@@ -9,10 +16,12 @@ import { UsersService } from "src/users/users.service";
 import { Session } from "./entities/session.entity";
 import { User } from "src/users/users.entity";
 
-type MockRepository<T> = Partial<
-  Record<keyof Repository<T>, ReturnType<typeof vi.fn>>
->;
-type MockService<T> = Partial<Record<keyof T, ReturnType<typeof vi.fn>>>;
+// Type for creating mocked versions of services and repositories
+type MockedClass<T> = {
+  [K in keyof T]: T[K] extends (...args: infer A) => infer R
+    ? MockedFunction<(...args: A) => R>
+    : T[K];
+};
 
 // Mock data for reuse in tests
 const mockUser: User = {
@@ -20,7 +29,7 @@ const mockUser: User = {
   email: "test@example.com",
   password: "hashedpassword",
   sessions: [],
-};
+} as unknown as User;
 
 const mockCreateUserDto = {
   email: "test@example.com",
@@ -34,23 +43,23 @@ const hashToken = (token: string): string => {
 
 describe("SessionService", () => {
   let service: SessionService;
-  let mockUsersService: MockService<UsersService>;
-  let mockJwtService: MockService<JwtService>;
-  let mockSessionRepository: MockRepository<Session>;
+  let mockUsersService: MockedClass<UsersService>;
+  let mockJwtService: MockedClass<JwtService>;
+  let mockSessionRepository: MockedClass<Repository<Session>>;
 
   beforeEach(() => {
-    // Create fresh mocks for each test using `vi.fn()`
+    // Create mocks using vi.fn() and type assertion
     mockUsersService = {
       createUser: vi.fn(),
       getUserByEmail: vi.fn(),
       comparePassword: vi.fn(),
       getUser: vi.fn(),
-    };
+    } as unknown as MockedClass<UsersService>;
 
     mockJwtService = {
       signAsync: vi.fn(),
       verifyAsync: vi.fn(),
-    };
+    } as unknown as MockedClass<JwtService>;
 
     mockSessionRepository = {
       create: vi.fn(),
@@ -58,13 +67,13 @@ describe("SessionService", () => {
       findOneBy: vi.fn(),
       delete: vi.fn(),
       remove: vi.fn(),
-    };
+    } as unknown as MockedClass<Repository<Session>>;
 
-    // Manually instantiate the service with the mock dependencies
+    // Instantiate the service with the mocks
     service = new SessionService(
-      mockUsersService as UsersService,
-      mockJwtService as JwtService,
-      mockSessionRepository as Repository<Session>,
+      mockUsersService as unknown as UsersService,
+      mockJwtService as unknown as JwtService,
+      mockSessionRepository as unknown as Repository<Session>,
     );
   });
 
@@ -77,7 +86,7 @@ describe("SessionService", () => {
       mockUsersService.createUser.mockResolvedValue(mockUser);
       mockJwtService.signAsync.mockResolvedValue("mock.access.token");
       mockSessionRepository.save.mockResolvedValue(new Session());
-      mockSessionRepository.create.mockImplementation((dto) => dto as User);
+      mockSessionRepository.create.mockImplementation((dto) => dto as Session);
 
       const result = await service.signUp(mockCreateUserDto);
 
@@ -95,10 +104,10 @@ describe("SessionService", () => {
     it("should return tokens on successful sign-in", async () => {
       const signInDto = { email: "test@example.com", password: "password123" };
       mockUsersService.getUserByEmail.mockResolvedValue(mockUser);
-      mockUsersService.comparePassword.mockResolvedValue(undefined);
+      mockUsersService.comparePassword.mockResolvedValue(true);
       mockJwtService.signAsync.mockResolvedValue("mock.access.token");
       mockSessionRepository.save.mockResolvedValue(new Session());
-      mockSessionRepository.create.mockImplementation((dto) => dto as User);
+      mockSessionRepository.create.mockImplementation((dto) => dto as Session);
 
       const result = await service.signIn(signInDto);
 
@@ -115,7 +124,9 @@ describe("SessionService", () => {
 
     it("should throw UnauthorizedException if user is not found", async () => {
       const signInDto = { email: "wrong@example.com", password: "password123" };
-      mockUsersService.getUserByEmail.mockResolvedValue(null);
+      mockUsersService.getUserByEmail.mockResolvedValue(
+        null as unknown as User,
+      );
 
       await expect(service.signIn(signInDto)).rejects.toThrow(TypeError);
     });
@@ -169,10 +180,11 @@ describe("SessionService", () => {
         expires: new Date(Date.now() + 100000), // Not expired
         refresh_token: hashedToken,
         user: mockUser,
-      };
+      } as Session;
+
       mockSessionRepository.findOneBy.mockResolvedValue(mockSession);
       mockJwtService.signAsync.mockResolvedValue("new.access.token");
-      mockSessionRepository.create.mockImplementation((dto) => dto as User);
+      mockSessionRepository.create.mockImplementation((dto) => dto as Session);
 
       const result = await service.refreshTokens(mockUser, refreshToken);
 
@@ -202,7 +214,8 @@ describe("SessionService", () => {
         expires: new Date(Date.now() - 100000), // Expired
         refresh_token: hashedToken,
         user: mockUser,
-      };
+      } as Session;
+
       mockSessionRepository.findOneBy.mockResolvedValue(mockSession);
 
       await expect(

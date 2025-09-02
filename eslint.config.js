@@ -1,6 +1,7 @@
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import { defineConfig, globalIgnores } from "eslint/config";
+import vitest from "@vitest/eslint-plugin";
 
 export default defineConfig([
   globalIgnores([
@@ -40,8 +41,19 @@ export default defineConfig([
   },
   {
     files: ["**/*.spec.ts", "**/*.test.ts"],
+    plugins: {
+      vitest,
+    },
     rules: {
+      ...vitest.configs.recommended.rules,
       "@typescript-eslint/unbound-method": "off",
+    },
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.vitest,
+        ...vitest.environments.env.globals,
+      },
     },
   },
 ]);

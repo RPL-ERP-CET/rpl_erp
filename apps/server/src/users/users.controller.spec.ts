@@ -14,7 +14,7 @@ describe("UsersController", () => {
     deleteUser: vi.fn(),
     comparePassword: vi.fn(),
     getUserByEmail: vi.fn(),
-  };
+  } as unknown as UsersService;
 
   beforeEach(() => {
     service = mockService;
