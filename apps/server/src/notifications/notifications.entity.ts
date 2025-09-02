@@ -25,7 +25,7 @@ export class Notification {
     eager: true,
   })
   @JoinColumn({ name: "priority" })
-  priority!: NotificationPriority;
+  priority?: NotificationPriority | null;
 
   @Column({ type: "integer", nullable: true })
   cooldown?: number;

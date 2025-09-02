@@ -12,8 +12,9 @@ export class CreateNotificationDto {
   @IsString()
   declare content: string;
 
+  @IsNotEmpty()
   @IsOptional()
-  @IsUUID("4", { message: "priority must be a valid UUID" })
+  @IsUUID()
   declare priority?: string;
 
   @IsOptional()
