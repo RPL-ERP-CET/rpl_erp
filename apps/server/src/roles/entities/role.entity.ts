@@ -18,7 +18,9 @@ export class Role {
   @Column()
   priority!: number;
 
-  @ManyToMany(() => Permission, { eager: true })
+  @ManyToMany(() => Permission, (permission) => permission.roles, {
+    eager: true,
+  })
   @JoinTable()
   permissions!: Permission[];
 }
