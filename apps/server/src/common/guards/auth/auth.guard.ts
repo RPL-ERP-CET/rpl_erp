@@ -25,22 +25,28 @@ export class AuthGuard implements CanActivate {
         message: "Invalid token",
         error: "Unauthorized error",
       });
+    let payload: JwtPayload;
     try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
+      payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>("JWT_SECRET"),
       });
-      if (payload && payload?.id) {
-        request.user = await this.userService.getUser(payload.id);
-      } else {
-        throw new UnauthorizedException({
-          message:
-            "Token payload is invalid or does not contain user identification",
-          error: "Unauthorized error",
-        });
-      }
     } catch (_error) {
       throw new UnauthorizedException({
         message: "Token verification failed",
+        error: "Unauthorized error",
+      });
+    }
+    if (payload && payload?.id) {
+      const user = await this.userService.getUser(payload.id);
+      if (!user)
+        throw new UnauthorizedException({
+          message: "User not found",
+          error: "Unauthorized error",
+        });
+      request.user = user;
+    } else {
+      throw new UnauthorizedException({
+        message: "Token payload is invalid",
         error: "Unauthorized error",
       });
     }
