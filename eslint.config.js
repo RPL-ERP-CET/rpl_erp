@@ -21,7 +21,7 @@ export default defineConfig([
       },
     },
   },
-  ...tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.recommendedTypeChecked,
   {
     files: ["**/*.spec.ts", "**/*.test.ts"],
     rules: {
