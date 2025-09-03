@@ -9,6 +9,8 @@ import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { UsersService } from "src/users/users.service";
 import { JwtPayload } from "src/common/types/jwt-payload";
+import { Reflector } from "@nestjs/core";
+import { SKIP_AUTH_KEY } from "src/common/decorators/skip-auth.decorator";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,15 +18,27 @@ export class AuthGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userService: UsersService,
+    private readonly reflector: Reflector,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
     const token: string | undefined = this.extractToken(request);
+
+    const skipAuth = this.reflector.getAllAndOverride<boolean>(SKIP_AUTH_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (skipAuth) {
+      return true;
+    }
+
     if (token === undefined)
       throw new UnauthorizedException({
         message: "Invalid token",
         error: "Unauthorized error",
       });
+
     let payload: JwtPayload;
     try {
       payload = await this.jwtService.verifyAsync(token, {
@@ -36,6 +50,7 @@ export class AuthGuard implements CanActivate {
         error: "Unauthorized error",
       });
     }
+
     if (payload && payload?.id) {
       const user = await this.userService.getUser(payload.id);
       if (!user)
@@ -50,6 +65,7 @@ export class AuthGuard implements CanActivate {
         error: "Unauthorized error",
       });
     }
+
     return true;
   }
 

@@ -1,16 +1,28 @@
 import { NestFactory, HttpAdapterHost } from "@nestjs/core";
-import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import cookieParser from "cookie-parser";
-// import { RolesGuard } from "./common/guards/roles/roles.guard";
-import { CatchEverythingFilter } from "src/common/filters/exceptions.filter";
 import { ValidationPipe } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { Reflector } from "@nestjs/core";
+
+import { UsersService } from "src/users/users.service";
+import { AuthGuard } from "src/common/guards/auth/auth.guard";
+import { CatchEverythingFilter } from "src/common/filters/exceptions.filter";
+import { AppModule } from "./app.module";
 
 const PORT = process.env.PORT ?? 4000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  // app.useGlobalGuards(new RolesGuard());
+  app.useGlobalGuards(
+    new AuthGuard(
+      app.get(JwtService),
+      app.get(ConfigService),
+      app.get(UsersService),
+      app.get(Reflector),
+    ),
+  );
   app.use(cookieParser());
   const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(new CatchEverythingFilter(httpAdapterHost));
