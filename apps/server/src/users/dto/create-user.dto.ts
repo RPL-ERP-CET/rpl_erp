@@ -1,5 +1,6 @@
 import { IsEmail, IsString, MinLength } from "class-validator";
 import { Role } from "src/roles/entities/role.entity";
+import { Session } from "src/session/entities/session.entity";
 
 export class CreateUserDto {
   @IsEmail()
@@ -10,4 +11,5 @@ export class CreateUserDto {
   declare password: string;
 
   roles?: Role[];
+  sessions?: Session[];
 }
