@@ -10,6 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
 import { UnauthorizedException } from "@nestjs/common";
 import { createHash } from "crypto";
+import { ConfigService } from "@nestjs/config";
 
 import { SessionService } from "./session.service";
 import { UsersService } from "src/users/users.service";
@@ -34,6 +35,10 @@ const mockUser: User = {
 const mockCreateUserDto = {
   email: "test@example.com",
   password: "password123",
+};
+
+const mockConfigService = {
+  get: vi.fn((_: string) => "1234Secret"),
 };
 
 // Helper to hash tokens consistently with the service
@@ -73,6 +78,7 @@ describe("SessionService", () => {
     service = new SessionService(
       mockUsersService as unknown as UsersService,
       mockJwtService as unknown as JwtService,
+      mockConfigService as unknown as ConfigService,
       mockSessionRepository as unknown as Repository<Session>,
     );
   });

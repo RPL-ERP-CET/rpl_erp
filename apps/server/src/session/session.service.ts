@@ -6,6 +6,7 @@ import { v4 as uuid } from "uuid";
 import { createHash } from "crypto";
 
 import { UsersService } from "src/users/users.service";
+import { ConfigService } from "@nestjs/config";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { User } from "src/users/users.entity";
 import { Session } from "./entities/session.entity";
@@ -16,6 +17,7 @@ export class SessionService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
     @InjectRepository(Session)
     private readonly sessionRepo: Repository<Session>,
   ) {}
@@ -72,11 +74,18 @@ export class SessionService {
 
   async getTokens(user: User): Promise<Record<string, string>> {
     const refreshToken = uuid();
+    const expires = new Date(
+      Date.now() +
+        parseInt(
+          this.configService.get<string>("REFRESH_EXPIRES_IN") as string,
+          10,
+        ) || 604800000,
+    );
 
     const session = this.sessionRepo.create({
       refresh_token: this.hashToken(refreshToken),
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      user,
+      expires,
+      user: user,
     });
 
     await this.sessionRepo.save(session);
