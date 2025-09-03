@@ -10,6 +10,7 @@ import { UsersService } from "src/users/users.service";
 import { AuthGuard } from "src/common/guards/auth/auth.guard";
 import { CatchEverythingFilter } from "src/common/filters/exceptions.filter";
 import { AppModule } from "./app.module";
+import { PermissionsGuard } from "./common/guards/permissions/permissions.guard";
 
 const PORT = process.env.PORT ?? 4000;
 async function bootstrap() {
@@ -22,6 +23,7 @@ async function bootstrap() {
       app.get(UsersService),
       app.get(Reflector),
     ),
+    new PermissionsGuard(app.get(Reflector)),
   );
   app.use(cookieParser());
   const httpAdapterHost = app.get(HttpAdapterHost);
