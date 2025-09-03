@@ -8,12 +8,15 @@ import { Repository } from "typeorm";
 import bcrypt from "bcryptjs";
 
 import { User } from "./users.entity";
+import { Role } from "src/roles/entities/role.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { RolesService } from "src/roles/roles.service";
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    private readonly roleService: RolesService,
   ) {}
 
   async getUsers(): Promise<User[]> {
@@ -57,6 +60,24 @@ export class UsersService {
 
   async createUser(dto: CreateUserDto): Promise<User> {
     const user = this.userRepo.create(dto);
+    return await this.userRepo.save(user);
+  }
+
+  async removeUserRole(user: User, roles: Role[]): Promise<User> {
+    const allRoles = await this.roleService.findAll();
+    const rolesToRemove = allRoles.filter((role) =>
+      roles.some((r) => r.id === role.id),
+    );
+
+    if (rolesToRemove.length != roles.length)
+      throw new NotFoundException({
+        message: "One or more roles not found",
+        error: "Not Found",
+      });
+
+    user.roles = user.roles.filter(
+      (role) => !rolesToRemove.some((r) => r.id === role.id),
+    );
     return await this.userRepo.save(user);
   }
 

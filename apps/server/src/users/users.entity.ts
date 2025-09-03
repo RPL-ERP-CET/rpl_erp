@@ -4,8 +4,11 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import bcrypt from "bcryptjs";
+import { Role } from "src/roles/entities/role.entity";
 
 @Entity("users")
 export class User {
@@ -17,6 +20,10 @@ export class User {
 
   @Column({ type: "varchar", select: false })
   password!: string;
+
+  @ManyToMany(() => Role, (role) => role.users, { eager: true })
+  @JoinTable()
+  roles!: Role[];
 
   @BeforeInsert()
   @BeforeUpdate()
