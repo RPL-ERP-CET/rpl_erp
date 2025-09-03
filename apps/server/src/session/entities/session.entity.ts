@@ -2,7 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "../../users/users.entity";
@@ -18,7 +18,10 @@ export class Session {
   @Column({ type: "timestamptz" })
   expires!: Date;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User, (user) => user.sessions, {
+    cascade: ["insert", "update"],
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "userId" })
   user!: User;
 }
