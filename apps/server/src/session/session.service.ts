@@ -31,12 +31,10 @@ export class SessionService {
     return this.getTokens(user);
   }
 
-  async verifyAccessToken(
-    token: string,
-  ): Promise<Record<string, boolean | string>> {
+  async verifyAccessToken(token: string): Promise<User> {
     const decoded: User = await this.jwtService.verifyAsync(token);
     const user = await this.usersService.getUser(decoded.id);
-    return { ...user };
+    return user;
   }
 
   async verifyRefreshToken(
@@ -83,12 +81,12 @@ export class SessionService {
 
     await this.sessionRepo.save(session);
 
-    const accessToken = await this.generateAccessToken(user);
+    const accessToken = await this.generateAccessToken(user.id);
     return { accessToken, refreshToken };
   }
 
-  async generateAccessToken(user: User): Promise<string> {
-    return await this.jwtService.signAsync({ ...user, jti: uuid() });
+  async generateAccessToken(id: string): Promise<string> {
+    return await this.jwtService.signAsync({ id, jti: uuid() });
   }
 
   async logout(user: User, token: string): Promise<void> {
