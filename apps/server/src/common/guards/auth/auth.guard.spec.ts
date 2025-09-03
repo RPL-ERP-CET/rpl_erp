@@ -2,15 +2,25 @@ import { AuthGuard } from "./auth.guard";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { UsersService } from "src/users/users.service";
-import { ExecutionContext } from "@nestjs/common";
+import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { HttpArgumentsHost } from "@nestjs/common/interfaces";
 import { Request } from "express";
 import { User } from "src/users/users.entity";
+import { Reflector } from "@nestjs/core";
 
-const mockJwtService = { verifyAsync: vi.fn() };
+// This key is typically defined in a decorator file (e.g., public.decorator.ts)
+// We define it here to be used in our tests.
+export const IS_PUBLIC_KEY = "skipAuth";
+
+// Mock dependencies
+const mockJwtService = { verify: vi.fn() };
 const mockConfigService = { get: vi.fn() };
 const mockUsersService = { getUser: vi.fn() };
+const mockReflector = {
+  getAllAndOverride: vi.fn(),
+};
 
+// Helper to create a mock ExecutionContext
 const createMockExecutionContext = (headers: {
   [key: string]: string;
 }): ExecutionContext => {
@@ -37,11 +47,13 @@ describe("AuthGuard", () => {
   let guard: AuthGuard;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllMocks(); // Reset mocks before each test
+
     guard = new AuthGuard(
       mockJwtService as unknown as JwtService,
       mockConfigService as unknown as ConfigService,
       mockUsersService as unknown as UsersService,
+      mockReflector as unknown as Reflector,
     );
   });
 
@@ -50,70 +62,107 @@ describe("AuthGuard", () => {
   });
 
   describe("canActivate", () => {
-    it("should return true for a valid token and user", async () => {
-      const mockUser: User = {
-        id: "user-123",
-        email: "test@example.com",
-      } as User;
-      const context = createMockExecutionContext({
-        authorization: "Bearer valid-token",
-      });
-      const request: Request & { user?: User } = context
-        .switchToHttp()
-        .getRequest();
+    // --- Test for Public Routes (using Reflector) ---
+    it("should return true and bypass auth for a public route", async () => {
+      // Arrange: mock the reflector to return 'true' for the IS_PUBLIC_KEY
+      const context = createMockExecutionContext({});
+      mockReflector.getAllAndOverride.mockReturnValue(true);
 
-      mockJwtService.verifyAsync.mockResolvedValue({ id: mockUser.id });
-      mockUsersService.getUser.mockResolvedValue(mockUser);
-
+      // Act: run the guard
       const result = await guard.canActivate(context);
 
+      // Assert: expect the guard to pass and NOT call any auth-related services
       expect(result).toBe(true);
-      expect(request.user).toEqual(mockUser);
-    });
-
-    it("should throw UnauthorizedException if payload has no id", async () => {
-      const context = createMockExecutionContext({
-        authorization: "Bearer valid-token-no-id",
-      });
-
-      mockJwtService.verifyAsync.mockResolvedValue({
-        sub: "123",
-        name: "test",
-      });
-
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        "Token payload is invalid",
+      expect(mockReflector.getAllAndOverride).toHaveBeenCalledWith(
+        IS_PUBLIC_KEY,
+        [context.getHandler(), context.getClass()],
       );
+      expect(mockJwtService.verify).not.toHaveBeenCalled();
+      expect(mockUsersService.getUser).not.toHaveBeenCalled();
     });
 
-    it("should throw an UnauthorizedException if user is not found", async () => {
-      const userId = "non-existent-user-id";
-      const context = createMockExecutionContext({
-        authorization: "Bearer valid-token",
+    // --- Tests for Protected Routes ---
+    describe("when a route is protected", () => {
+      // For all protected route tests, we ensure the reflector returns false
+      beforeEach(() => {
+        mockReflector.getAllAndOverride.mockReturnValue(false);
       });
 
-      mockJwtService.verifyAsync.mockResolvedValue({ id: userId });
-      mockUsersService.getUser.mockResolvedValue(null);
+      it("should return true for a valid token and existing user", async () => {
+        const mockUser: User = {
+          id: "user-123",
+          email: "test@example.com",
+        } as User;
+        const context = createMockExecutionContext({
+          authorization: "Bearer valid-token",
+        });
+        const request: Request & { user?: User } = context
+          .switchToHttp()
+          .getRequest();
 
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        "User not found",
-      );
-      expect(mockUsersService.getUser).toHaveBeenCalledWith(userId);
-    });
+        mockJwtService.verify.mockResolvedValue({ id: mockUser.id });
+        mockUsersService.getUser.mockResolvedValue(mockUser);
 
-    it("should throw UnauthorizedException if token verification fails", async () => {
-      const context = createMockExecutionContext({
-        authorization: "Bearer invalid-token",
+        const result = await guard.canActivate(context);
+
+        expect(result).toBe(true);
+        expect(request.user).toEqual(mockUser); // Ensure user is attached to request
       });
-      mockJwtService.verifyAsync.mockRejectedValue(new Error("jwt error"));
-      await expect(guard.canActivate(context)).rejects.toThrow(
-        "Token verification failed",
-      );
-    });
 
-    it("should throw UnauthorizedException if token is missing", async () => {
-      const context = createMockExecutionContext({});
-      await expect(guard.canActivate(context)).rejects.toThrow("Invalid token");
+      it("should throw UnauthorizedException if authorization header is missing", async () => {
+        const context = createMockExecutionContext({}); // No auth header
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
+
+      it("should throw UnauthorizedException if token is not Bearer", async () => {
+        const context = createMockExecutionContext({
+          authorization: "Basic some-other-token",
+        });
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
+
+      it("should throw UnauthorizedException if token verification fails", async () => {
+        const context = createMockExecutionContext({
+          authorization: "Bearer invalid-token",
+        });
+        mockJwtService.verify.mockRejectedValue(new Error("jwt error"));
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
+
+      it("should throw UnauthorizedException if token payload has no id", async () => {
+        const context = createMockExecutionContext({
+          authorization: "Bearer valid-token-no-id",
+        });
+        mockJwtService.verify.mockResolvedValue({ sub: "123" }); // No 'id'
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+      });
+
+      it("should throw an UnauthorizedException if user is not found in the database", async () => {
+        const userId = "non-existent-user-id";
+        const context = createMockExecutionContext({
+          authorization: "Bearer valid-token",
+        });
+
+        mockJwtService.verify.mockResolvedValue({ id: userId });
+        mockUsersService.getUser.mockResolvedValue(null); // Simulate user not found
+
+        await expect(guard.canActivate(context)).rejects.toThrow(
+          UnauthorizedException,
+        );
+        expect(mockUsersService.getUser).toHaveBeenCalledWith(userId);
+      });
     });
   });
 });

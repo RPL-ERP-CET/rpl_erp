@@ -21,9 +21,6 @@ export class AuthGuard implements CanActivate {
     private readonly reflector: Reflector,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
-    const token: string | undefined = this.extractToken(request);
-
     const skipAuth = this.reflector.getAllAndOverride<boolean>(SKIP_AUTH_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -33,6 +30,9 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
+    const request: Request = context.switchToHttp().getRequest();
+    const token: string | undefined = this.extractToken(request);
+
     if (token === undefined)
       throw new UnauthorizedException({
         message: "Invalid token",
@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
 
     let payload: JwtPayload;
     try {
-      payload = await this.jwtService.verifyAsync(token, {
+      payload = await this.jwtService.verify(token, {
         secret: this.configService.get<string>("JWT_SECRET"),
       });
     } catch (_error) {
