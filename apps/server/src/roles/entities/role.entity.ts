@@ -5,18 +5,23 @@ import {
   ManyToMany,
   JoinTable,
 } from "typeorm";
-import { Permission } from "../../permissions/permissions.entity";
+import { Permission } from "src/permissions/permissions.entity";
+import { User } from "src/users/users.entity";
 
-@Entity()
+@Entity("roles")
 export class Role {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: "varchar" })
   name!: string;
 
-  @Column()
+  @Column({ type: "int", default: 1 })
   priority!: number;
+
+  @ManyToMany(() => User, (user) => user.roles)
+  @JoinTable()
+  users!: User[];
 
   @ManyToMany(() => Permission, (permission) => permission.roles, {
     eager: true,
