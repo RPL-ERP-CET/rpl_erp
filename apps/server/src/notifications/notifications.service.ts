@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateNotificationDto } from "./dto/create-notification.dto";
 import { CreateNotificationVisibilityUserDto } from "./dto/create-notification-visibility-user.dto";
+/*
+import { CreateNotificationVisibilityRoleDto } from "./dto/create-notification-visibility-role.dto";
+import { CreateNotificationAttachmentDto } from "./dto/create-notification-attachment.dto";
+*/
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Notification } from "./notifications.entity";
@@ -8,6 +12,12 @@ import { NotificationVisibilityUser } from "./notification-visibility-user.entit
 import { NotificationReadReceipt } from "./notification-read-receipt.entity";
 import { NotificationPriority } from "./notification-priority.entity";
 import { User } from "../users/users.entity";
+/*
+import { Role } from "../users/roles.entity";
+import { NotificationVisibilityRole } from "./notification-visibility-role.entity";
+import { Document } from "../document/document.entity";
+import { NotificationAttachment } from "./notification-attachment.entity";
+*/
 
 @Injectable()
 export class NotificationsService {
@@ -26,6 +36,18 @@ export class NotificationsService {
 
     @InjectRepository(NotificationPriority)
     private priorityRepository: Repository<NotificationPriority>,
+
+    /*@InjectRepository(Role)
+    private roleRepository: Repository<Role>,
+
+    @InjectRepository(NotificationVisibilityRole)
+    private visibilityRoleRepository: Repository<NotificationVisibilityRole>,
+    
+    @InjectRepository(Document)
+    private documentRepository: Repository<Document>,
+
+    @InjectRepository(NotificationAttachment)
+    private attachmentRepository: Repository<NotificationAttachment>,*/
   ) {}
 
   createNotification(dto: CreateNotificationDto) {
@@ -81,6 +103,41 @@ export class NotificationsService {
 
     return this.visibilityRepository.save(visibilityEntry);
   }
+
+  // ================= Role Visibility Methods ================= //
+  /*async getNotificationVisibleRoles(notificationId: string): Promise<Role[]> {
+    await this.getNotificationById(notificationId);
+
+    const visibilityEntries = await this.visibilityRoleRepository.find({
+      where: { notification: { id: notificationId }, },
+      relations: ["role"],
+    });
+
+    return visibilityEntries.map((entry) => entry.role);
+  }
+
+  async addRoleVisibility(
+    notificationId: string,
+    createDto: CreateNotificationVisibilityRoleDto,
+  ): Promise<NotificationVisibilityRole> {
+    const notification = await this.getNotificationById(notificationId);
+    const role = await this.roleRepository.findOne({
+      where: { id: createDto.role_id },
+    });
+    if (!role) {
+          throw new NotFoundException(
+            `Role with ID ${createDto.role_id} not found`,
+          );
+        }
+
+    const visibilityEntry = this.visibilityRoleRepository.create({
+      notification,
+      role,
+    });
+
+
+    return this.visibilityRoleRepository.save(visibilityEntry);
+  }*/
 
   async createReadReceipt(
     notificationId: string,
@@ -177,4 +234,69 @@ export class NotificationsService {
     await this.priorityRepository.remove(priority);
     return { message: "Priority deleted successfully" };
   }
+
+  // ================= Attachment Methods ================= //
+  /*async getNotificationAttachments(
+    notificationId: string,
+  ): Promise<
+    {
+      id: string;
+      type: string;
+      title: string;
+      created_by: string;
+      created_at: string;
+      updated_at: string;
+    }[]
+  > {
+    await this.getNotificationById(notificationId);
+
+
+    const attachmentEntries = await this.attachmentRepository.find({
+      where: { notification: { id: notificationId } },
+      relations: ['attachment'], 
+      select: {
+          id: true, 
+          attachment: { 
+              id: true,
+              type: true,
+              title: true, 
+              created_by: true,
+              created_at: true,
+              updated_at: true,
+          },
+      },
+    });
+
+    return attachmentEntries.map((entry) => ({
+      id: entry.attachment.id,
+      type: entry.attachment.type,
+      title: entry.attachment.title,
+      created_by: entry.attachment.created_by,
+      created_at: entry.attachment.created_at,
+      updated_at: entry.attachment.updated_at,
+    }));
+  }
+  async addAttachmentToNotification(
+    notificationId: string,
+    createDto: CreateNotificationAttachmentDto,
+  ): Promise<NotificationAttachment> {
+    await this.getNotificationById(notificationId);
+
+    const document = await this.documentRepository.findOne({
+      where: { id: createDto.document_id },
+    });
+    if (!document) {
+      throw new NotFoundException(
+        `Document with ID ${createDto.document_id} not found`,
+      );
+    }
+
+    const attachmentEntry = this.attachmentRepository.create({
+      notification: { id: notificationId },
+      attachment: { id: createDto.document_id },
+    });
+
+    return this.attachmentRepository.save(attachmentEntry);
+  }
+  */
 }
