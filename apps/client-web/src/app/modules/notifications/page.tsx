@@ -41,7 +41,7 @@ const NotificationCard = ({
           </p>
         </div>
         <button
-          onClick={() => void onMarkAsRead(notification.id)}
+          onClick={() => onMarkAsRead(notification.id)}
           className="text-blue-600 hover:underline text-sm font-semibold mt-4 text-left"
         >
           Mark as Read
