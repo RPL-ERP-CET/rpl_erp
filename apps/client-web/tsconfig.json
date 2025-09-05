@@ -26,14 +26,23 @@
       "@client-web/*": [
         "./src/*"
       ],
-      "@components/*": [
-        "./src/components/*"
+      "@common/components": [
+        "./src/components/"
       ],
-      "@services/": [
+      "@common/services": [
         "./src/services/"
       ],
-      "@hooks/": [
+      "@common/hooks": [
         "./src/hooks/"
+      ],
+      "@common/store": [
+        "./src/store/"
+      ],
+      "@common/utils": [
+        "./src/utils/"
+      ],
+      "@common/types": [
+        "./src/types/"
       ]
     }
   },
