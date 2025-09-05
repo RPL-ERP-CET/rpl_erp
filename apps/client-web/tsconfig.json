@@ -43,6 +43,9 @@
       ],
       "@common/types": [
         "./src/types/"
+      ],
+      "@cms": [
+        "./src/features/cms/"
       ]
     }
   },
