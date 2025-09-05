@@ -127,8 +127,3 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
 Sidebar.displayName = "Sidebar";
 
 export { Sidebar, sidebarVariants, sidebarItemVariants };
-
-// style={{
-//                             position: "absolute",
-//                             bottom: "var(--backbutton-position-bottom)",
-//                         }}
