@@ -35,6 +35,7 @@
         "@eslint/eslintrc": "^3.3.1",
         "@eslint/js": "^9.31.0",
         "@types/node": "^24.0.14",
+        "barrel-craft": "^0.1.0",
         "eslint": "^9.31.0",
         "eslint-config-prettier": "^10.1.5",
         "eslint-plugin-prettier": "^5.5.1",

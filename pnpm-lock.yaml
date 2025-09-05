@@ -22,6 +22,9 @@ importers:
       '@types/node':
         specifier: ^24.0.14
         version: 24.0.14
+      barrel-craft:
+        specifier: ^0.1.0
+        version: 0.1.0
       eslint:
         specifier: ^9.31.0
         version: 9.31.0(jiti@2.4.2)
@@ -2305,6 +2308,11 @@ packages:
 
   bare-events@2.6.0:
     resolution: {integrity: sha512-EKZ5BTXYExaNqi3I3f9RtEsaI/xBSGjE0XZCZilPzFAV/goswFHuPd9jEZlPIZ/iNZJwDSao9qRiScySz7MbQg==}
+
+  barrel-craft@0.1.0:
+    resolution: {integrity: sha512-kUwjToliS0vMNZUnJZw/s/rNGzVpppG1cTMnm+L+QIkaT0C9r41Zut4ptnGQoDCkwStHbQ0y8FSC4RZPaqk6HQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
@@ -6971,6 +6979,12 @@ snapshots:
 
   bare-events@2.6.0:
     optional: true
+
+  barrel-craft@0.1.0:
+    dependencies:
+      commander: 14.0.0
+      glob: 11.0.3
+      minimatch: 10.0.3
 
   base64-js@1.5.1: {}
 
