@@ -9,17 +9,23 @@ import type {
   T_ApiErrorResponse,
 } from "@client-web/services/config/api";
 
-export function useApiMutation<T_Data, T_Variables>(
+export function useApiMutation<
+  T_Data,
+  T_Variables,
+  T_Context = T_Data | undefined,
+>(
   options: UseMutationOptions<
     T_ApiSuccessResponse<T_Data>,
     T_ApiErrorResponse,
-    T_Variables
+    T_Variables,
+    T_Context
   >,
   queryClient?: QueryClient,
 ) {
   return useMutation<
     T_ApiSuccessResponse<T_Data>,
     T_ApiErrorResponse,
-    T_Variables
+    T_Variables,
+    T_Context
   >(options, queryClient);
 }
