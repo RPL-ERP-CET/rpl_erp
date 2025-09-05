@@ -27,7 +27,7 @@ async function updateCarouselItem({
   data,
 }: {
   id: string;
-  data: T_CarouselItem;
+  data: Partial<T_CarouselItem>;
 }) {
   return (
     await api.put<T_ApiSuccessResponse<T_CarouselItem>>(

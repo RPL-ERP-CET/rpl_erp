@@ -1,6 +1,7 @@
 import api, { T_ApiSuccessResponse } from "@client-web/services/config/api";
 
 export type T_Product = {
+  id: string;
   displayName: string;
   unit:
     | "kg"
@@ -53,7 +54,7 @@ async function createProduct(product: T_Product) {
     )
   ).data;
 }
-async function updateProduct(id: string, product: T_Product) {
+async function updateProduct(id: string, product: Partial<T_Product>) {
   return (
     await api.put<T_ApiSuccessResponse<T_Product>>(
       `/cms/landing/products/${id}`,
