@@ -1,4 +1,4 @@
-export * from "./useGetDepartments";
 export * from "./useCreateDepartment";
-export * from "./useUpdateDepartment";
 export * from "./useDeleteDepartment";
+export * from "./useGetDepartments";
+export * from "./useUpdateDepartment";
