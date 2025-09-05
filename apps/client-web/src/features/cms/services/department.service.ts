@@ -32,11 +32,9 @@ async function deleteDepartment(id: string) {
   ).data;
 }
 
-const departmentService = {
+export const departmentService = {
   getDepartments,
   createDepartment,
   updateDepartment,
   deleteDepartment,
 };
-
-export default departmentService;

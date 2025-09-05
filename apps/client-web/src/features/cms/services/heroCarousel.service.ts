@@ -44,11 +44,9 @@ async function deleteCarouselItem(id: string) {
   ).data;
 }
 
-const heroCarouselService = {
+export const heroCarouselService = {
   getCarouselItems,
   createCarouselItem,
   updateCarouselItem,
   deleteCarouselItem,
 };
-
-export default heroCarouselService;

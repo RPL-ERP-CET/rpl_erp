@@ -50,12 +50,10 @@ async function deleteExecutiveTeamMember(id: string) {
   ).data;
 }
 
-const executiveTeamService = {
+export const executiveTeamService = {
   getExecutiveTeamMembers,
   getExecutiveTeamMember,
   createExecutiveTeamMember,
   updateExecutiveTeamMember,
   deleteExecutiveTeamMember,
 };
-
-export default executiveTeamService;

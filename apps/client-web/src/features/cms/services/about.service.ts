@@ -36,11 +36,9 @@ async function deleteAboutItem(id: string) {
   ).data;
 }
 
-const aboutService = {
+export const aboutService = {
   getAboutItems,
   createAboutItem,
   updateAboutItem,
   deleteAboutItem,
 };
-
-export default aboutService;

@@ -35,11 +35,9 @@ async function deletePublication(id: string) {
   ).data;
 }
 
-const publicationService = {
+export const publicationService = {
   getPublications,
   createPublication,
   updatePublication,
   deletePublication,
 };
-
-export default publicationService;

@@ -69,7 +69,7 @@ async function deleteProduct(id: string) {
   ).data;
 }
 
-const productsService = {
+export const productsService = {
   getProducts,
   getProductById,
   getProductsByFilters,
@@ -77,5 +77,3 @@ const productsService = {
   updateProduct,
   deleteProduct,
 };
-
-export default productsService;

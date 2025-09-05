@@ -19,9 +19,7 @@ async function updateAddress(id: string, data: Partial<T_Address>) {
   ).data;
 }
 
-const addressService = {
+export const addressService = {
   getAddress,
   updateAddress,
 };
-
-export default addressService;

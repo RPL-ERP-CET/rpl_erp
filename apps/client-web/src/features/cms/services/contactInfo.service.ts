@@ -63,7 +63,7 @@ async function deleteContactEmail(id: string) {
   ).data;
 }
 
-const contactService = {
+export const contactService = {
   getContactInfo,
   createContactPhone,
   updateContactPhone,
@@ -72,5 +72,3 @@ const contactService = {
   updateContactEmail,
   deleteContactEmail,
 };
-
-export default contactService;
