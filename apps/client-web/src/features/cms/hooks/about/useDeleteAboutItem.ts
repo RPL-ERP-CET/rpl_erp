@@ -8,7 +8,7 @@ export const useDeleteAboutItem = () => {
   return useApiMutation({
     mutationFn: (id: string) => aboutService.deleteAboutItem(id),
 
-    onMutate: async (id: string) => {
+    onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ["about-items"] });
       const previousItems = queryClient.getQueryData<T_AboutItem[]>([
         "about-items",

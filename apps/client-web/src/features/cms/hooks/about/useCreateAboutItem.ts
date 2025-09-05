@@ -6,7 +6,7 @@ export const useCreateAboutItem = () => {
   const queryClient = useQueryClient();
   return useApiMutation({
     mutationFn: aboutService.createAboutItem,
-    onMutate: async (aboutItem: T_AboutItem) => {
+    onMutate: async (aboutItem) => {
       await queryClient.cancelQueries({ queryKey: ["about-items"] });
       const previousItems = queryClient.getQueryData<T_AboutItem[]>([
         "about-items",
