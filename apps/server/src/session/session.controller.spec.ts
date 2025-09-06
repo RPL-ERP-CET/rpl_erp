@@ -17,6 +17,8 @@ describe("SessionController", () => {
     hashPassword: vi.fn(),
     createdAt: new Date(),
     updatedAt: new Date(),
+    sessions: [],
+    roles: [],
   } as User;
 
   beforeEach(() => {
@@ -176,16 +178,20 @@ describe("SessionController", () => {
     it("should logout user successfully", async () => {
       const token = "valid.refresh.token";
 
-      const result = await controller.logout(mockUser, token);
+      const result = await controller.logout(
+        mockUser,
+        token,
+        mockResponse as Response,
+      );
 
       expect(mockSessionService.logout).toHaveBeenCalledWith(mockUser, token);
       expect(result).toEqual({ message: "Logged out successfully" });
     });
 
     it("should throw UnauthorizedException when token is missing", async () => {
-      await expect(() => controller.logout(mockUser, "")).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(() =>
+        controller.logout(mockUser, "", mockResponse as Response),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 });

@@ -7,6 +7,8 @@ import {
   Get,
   Res,
   UnauthorizedException,
+  Param,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import type { Response } from "express";
 
@@ -91,15 +93,35 @@ export class SessionController {
     return { accessToken };
   }
 
+  @Get("revoke/:id")
+  async revokeSession(
+    @UserDecorator("") user: User,
+    @Param("id", ParseUUIDPipe) sessionId: string,
+  ) {
+    return this.sessionService.revokeSession(user, sessionId);
+  }
+
+  @Get("sessions")
+  async getActiveSessions(@UserDecorator("") user: User) {
+    return this.sessionService.getActiveSessions(user);
+  }
+
   @Get("logout")
   async logout(
     @UserDecorator("") user: User,
     @Cookies("refresh_token") token: string,
+    @Res({ passthrough: true }) response: Response,
   ) {
     if (!token || !user)
       throw new UnauthorizedException("Invalid refresh token");
 
     await this.sessionService.logout(user, token);
+    response.clearCookie("refresh_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/auth",
+    });
     return { message: "Logged out successfully" };
   }
 }
