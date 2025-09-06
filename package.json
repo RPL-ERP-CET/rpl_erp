@@ -47,6 +47,7 @@
         "vitest": "^3.2.4"
     },
     "dependencies": {
-        "zod": "^4.0.5"
+        "zod": "^4.0.5",
+        "zustand": "^5.0.8"
     }
 }
