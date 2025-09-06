@@ -12,7 +12,7 @@ export class Session {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", select: false })
   refresh_token!: string;
 
   @Column({ type: "timestamptz" })
@@ -24,4 +24,10 @@ export class Session {
   })
   @JoinColumn({ name: "userId" })
   user!: User;
+
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  createdAt!: Date;
+
+  @Column({ type: "timestamp", nullable: true })
+  lastUsed?: Date;
 }
