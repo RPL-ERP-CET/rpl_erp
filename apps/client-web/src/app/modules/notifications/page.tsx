@@ -1,7 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import { useNotifications } from "@client-web/features/notifications/hooks/useNotifications";
-import { type Notification, type NotificationType } from "@client-web/features/notifications/types";
+import {
+  type Notification,
+  type NotificationType,
+} from "@client-web/features/notifications/types";
 import { Card, CardContent } from "@client-web/components/ui/card";
 
 // Sub-component for displaying a single notification card
@@ -10,7 +14,7 @@ const NotificationCard = ({
   onMarkAsRead,
 }: {
   notification: Notification;
-  onMarkAsRead: (id: number) => void;
+  onMarkAsRead: (id: number) => Promise<void>;
 }) => {
   // Map notification types to specific styles for the tag
   const tagVariants: Record<NotificationType, string> = {
@@ -27,8 +31,9 @@ const NotificationCard = ({
         <div>
           <div className="flex justify-between items-center mb-2">
             <span
-              className={`px-3 py-1 text-xs font-semibold rounded-full ${tagVariants[notification.type]
-                }`}
+              className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                tagVariants[notification.type]
+              }`}
             >
               {notification.type}
             </span>
@@ -41,7 +46,11 @@ const NotificationCard = ({
           </p>
         </div>
         <button
-          onClick={() => onMarkAsRead(notification.id)}
+          onClick={() => {
+            onMarkAsRead(notification.id).catch((err) => {
+              console.error("Failed to mark as read:", err);
+            });
+          }}
           className="text-blue-600 hover:underline text-sm font-semibold mt-4 text-left"
         >
           Mark as Read
@@ -53,10 +62,16 @@ const NotificationCard = ({
 
 // Main Page Component
 export default function NotificationsPage() {
-  const { notifications, isLoading, markAsRead } = useNotifications();
+  const { notifications, isLoading, markAsRead, fetchNotifications } =
+    useNotifications();
+
+  useEffect(() => {
+    fetchNotifications().catch((err) => {
+      console.error("Failed to fetch initial notifications:", err);
+    });
+  }, [fetchNotifications]);
 
   return (
-    // This JSX fits directly into the {children} of your layout.tsx
     <>
       <h3 className="text-3xl font-bold text-center mb-8 text-gray-800">
         Notification Center

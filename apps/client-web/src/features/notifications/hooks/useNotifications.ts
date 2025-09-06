@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 import { useNotificationStore } from "../store/notificationStore";
 import { notificationService } from "../services/notificationService";
 
@@ -38,13 +38,8 @@ export const useNotifications = () => {
         // real app: you show an error toast to the user here
       }
     },
-    [markAsReadInStore]
+    [markAsReadInStore],
   );
 
-  // Automatically fetch data when the hook is first used
-  useEffect(() => {
-    void fetchNotifications();
-  }, [fetchNotifications]);
-
-  return { notifications, isLoading, markAsRead, refetch: fetchNotifications };
+  return { notifications, isLoading, markAsRead, fetchNotifications };
 };
