@@ -15,12 +15,16 @@ describe("UsersService", () => {
       email: "user1@test.com",
       password: "hashedpassword1",
       hashPassword: () => {},
+      roles: [],
+      sessions: [],
     },
     {
       id: "user-2",
       email: "user2@test.com",
       password: "hashedpassword2",
       hashPassword: () => {},
+      roles: [],
+      sessions: [],
     },
   ];
 
@@ -29,6 +33,8 @@ describe("UsersService", () => {
     email: "test@email.com",
     password: bcrypt.hashSync("sharon", 10),
     hashPassword: () => {},
+    roles: [],
+    sessions: [],
   };
 
   const mockQueryBuilder = {
