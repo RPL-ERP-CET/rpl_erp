@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@client-web/components/ui/button";
-import { UserProfile } from "@client-web/app/mocks/profileData";
+import { UserProfile } from "@client-web/app/mocks/Authorization/profileData";
 
 export default function ProfilePage() {
     const userProfile = UserProfile[0];
     return (
-        <div className="flex-1 pt-[10px] flex flex-col items-center ">
+        <div className="flex-1 pt-[10px] py-[20px] flex flex-col items-center ">
             {/* title */}
             <h2 className="text-[36px] font-bold mb-4">Profile</h2>
             {/* content */}

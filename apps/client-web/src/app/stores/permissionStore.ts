@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { PermissionManageData } from "../mocks/permissionManageData";
+import { PermissionManageData } from "../mocks/Authorization/permissionManageData";
 
 type PermissionStore = {
   permissionData: typeof PermissionManageData[0]; // same shape as your mock
