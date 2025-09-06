@@ -1,9 +1,15 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { LessThan, MoreThan, Repository } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { createHash } from "crypto";
+import { Cron, CronExpression } from "@nestjs/schedule";
 
 import { UsersService } from "src/users/users.service";
 import { ConfigService } from "@nestjs/config";
@@ -30,6 +36,7 @@ export class SessionService {
   async signIn(signUpAuthDto: SignUpAuthDto): Promise<Record<string, string>> {
     const user = await this.usersService.getUserByEmail(signUpAuthDto.email);
     await this.usersService.comparePassword(user.email, signUpAuthDto.password);
+    await this.cleanUpUserSessions(user.id);
     return this.getTokens(user);
   }
 
@@ -46,12 +53,9 @@ export class SessionService {
     const session = await this.sessionRepo.findOneBy({
       user: { id: user.id },
       refresh_token: this.hashToken(token),
+      expires: MoreThan(new Date()),
     });
     if (!session) throw new UnauthorizedException("Invalid refresh token");
-    if (session.expires < new Date()) {
-      await this.sessionRepo.delete(session);
-      throw new UnauthorizedException("Invalid or expired refresh token");
-    }
     return { valid: true };
   }
 
@@ -90,12 +94,97 @@ export class SessionService {
 
     await this.sessionRepo.save(session);
 
-    const accessToken = await this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(user.id, session.id);
     return { accessToken, refreshToken };
   }
 
-  async generateAccessToken(id: string): Promise<string> {
-    return await this.jwtService.signAsync({ id, jti: uuid() });
+  private async cleanUpExpiredSessions(userId?: string) {
+    try {
+      const whereCondition = {
+        expires: LessThan(new Date()),
+      };
+
+      if (userId) whereCondition["user"] = { id: userId };
+
+      const expiredSessions = await this.sessionRepo.find({
+        where: whereCondition,
+      });
+
+      if (expiredSessions.length > 0)
+        await this.sessionRepo.remove(expiredSessions);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  private async cleanUpUserSessions(userId: string) {
+    try {
+      await this.cleanUpExpiredSessions(userId);
+      const maxSessions = this.configService.get<number>("MAX_SESSIONS", 5);
+
+      const sessions = await this.sessionRepo.find({
+        where: {
+          user: { id: userId },
+          expires: MoreThan(new Date()),
+        },
+        order: { createdAt: "DESC" },
+      });
+      const sessionsToRemove = sessions.slice(maxSessions - 1);
+      if (sessions.length > maxSessions)
+        await this.sessionRepo.remove(sessionsToRemove);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getActiveSessions(user: User): Promise<Session[]> {
+    try {
+      const sessions = await this.sessionRepo.find({
+        where: {
+          user: { id: user.id },
+          expires: MoreThan(new Date()),
+        },
+        order: { createdAt: "DESC" },
+      });
+
+      return sessions;
+    } catch (error) {
+      console.error(
+        `Failed to get active sessions for user ${user.id}: ${error as string}`,
+      );
+      throw new InternalServerErrorException("Failed to retrieve sessions");
+    }
+  }
+
+  async revokeSession(user: User, sessionId: string): Promise<number> {
+    try {
+      const result = await this.sessionRepo.delete({
+        id: sessionId,
+        user: { id: user.id },
+      });
+
+      const sessionsTerminated = result.affected || 0;
+
+      if (sessionsTerminated === 0) {
+        throw new BadRequestException({
+          message: "Session not found or already revoked",
+          error: "Bad request",
+        });
+      }
+
+      console.log(`Session ${sessionId} revoked for user ${user.id}`);
+
+      return sessionsTerminated;
+    } catch (error) {
+      console.error(
+        `Failed to revoke session ${sessionId} for user ${user.id}: ${error as string}`,
+      );
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async generateAccessToken(id: string, sessionId: string): Promise<string> {
+    return await this.jwtService.signAsync({ id, sessionId, jti: uuid() });
   }
 
   async logout(user: User, token: string): Promise<void> {
@@ -105,7 +194,16 @@ export class SessionService {
     });
   }
 
-  hashToken(token: string): string {
+  private hashToken(token: string): string {
     return createHash("sha256").update(token).digest("hex");
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  async scheduledCleanup(): Promise<void> {
+    try {
+      await this.cleanUpExpiredSessions();
+    } catch (error) {
+      console.error(`Scheduled cleanup failed: ${error as string}`);
+    }
   }
 }
