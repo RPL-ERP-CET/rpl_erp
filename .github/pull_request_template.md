@@ -11,7 +11,7 @@ Related Issue(s): None / [link to issue]
 
 - **What (has changed):**
 - **Why (was the change introduced):**
-- **How (the change was implemented): **
+- **How (the change was implemented):**
 
 <!-- Please try to limit your pull request to one type, submit multiple pull requests if needed -->
 
